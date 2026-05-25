@@ -39,45 +39,55 @@ extension ThemeContext on BuildContext {
 }
 
 abstract class AppThemes {
-  static final lightTheme = ThemeData(
-    brightness: Brightness.light,
-    colorScheme: ColorScheme.fromSeed(
+  static ThemeData lightTheme(ColorScheme? dynamicColorScheme) {
+    return ThemeData(
       brightness: Brightness.light,
-      seedColor: AppColors.primary,
-      primary: AppColors.primary,
-      secondary: AppColors.textLight.withOpacity(0.5),
-      surface: AppColors.foregroundLight,
-      background: AppColors.backgroundLight,
-      onBackground: AppColors.textLight,
-      outline: AppColors.backgroundLight,
-      shadow: AppColors.shadowLight,
-      error: AppColors.error,
-      tertiary: AppColors.success,
-    ),
-    scaffoldBackgroundColor: AppColors.backgroundLight,
-    visualDensity: VisualDensity.compact,
-    platform: TargetPlatform.linux,
-    fontFamily: kMainFont,
-  );
+      colorScheme:
+          dynamicColorScheme ??
+          ColorScheme.fromSeed(
+            brightness: Brightness.light,
+            seedColor: AppColors.primary,
+            primary: AppColors.primary,
+            secondary: AppColors.textLight.withOpacity(0.5),
+            surface: AppColors.foregroundLight,
+            background: AppColors.backgroundLight,
+            onBackground: AppColors.textLight,
+            outline: AppColors.backgroundLight,
+            shadow: AppColors.shadowLight,
+            error: AppColors.error,
+            tertiary: AppColors.success,
+          ),
+      scaffoldBackgroundColor:
+          dynamicColorScheme?.background ?? AppColors.backgroundLight,
+      visualDensity: VisualDensity.compact,
+      platform: TargetPlatform.android,
+      fontFamily: kMainFont,
+    );
+  }
 
-  static final darkTheme = ThemeData(
-    brightness: Brightness.dark,
-    colorScheme: ColorScheme.fromSeed(
+  static ThemeData darkTheme(ColorScheme? dynamicColorScheme) {
+    return ThemeData(
       brightness: Brightness.dark,
-      seedColor: AppColors.primary,
-      primary: AppColors.primary,
-      secondary: AppColors.secondary,
-      surface: AppColors.foregroundDark,
-      background: AppColors.backgroundDark,
-      onBackground: AppColors.textDark,
-      outline: AppColors.secondary.withOpacity(0.3),
-      shadow: AppColors.shadowDark,
-      error: AppColors.error,
-      tertiary: AppColors.success,
-    ),
-    scaffoldBackgroundColor: AppColors.backgroundDark,
-    visualDensity: VisualDensity.compact,
-    platform: TargetPlatform.linux,
-    fontFamily: kMainFont,
-  );
+      colorScheme:
+          dynamicColorScheme ??
+          ColorScheme.fromSeed(
+            brightness: Brightness.dark,
+            seedColor: AppColors.primary,
+            primary: AppColors.primary,
+            secondary: AppColors.secondary,
+            surface: AppColors.foregroundDark,
+            background: AppColors.backgroundDark,
+            onBackground: AppColors.textDark,
+            outline: AppColors.secondary.withOpacity(0.3),
+            shadow: AppColors.shadowDark,
+            error: AppColors.error,
+            tertiary: AppColors.success,
+          ),
+      scaffoldBackgroundColor:
+          dynamicColorScheme?.background ?? AppColors.backgroundDark,
+      visualDensity: VisualDensity.compact,
+      platform: TargetPlatform.android,
+      fontFamily: kMainFont,
+    );
+  }
 }

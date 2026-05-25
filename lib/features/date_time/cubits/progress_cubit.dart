@@ -47,18 +47,22 @@ class ProgressCubit extends Cubit<ProgressState> {
       final int yearDays = firstDayInNextYear.difference(firstDayInYear).inDays;
       final int defDays = todayMidnight.difference(firstDayInYear).inDays;
 
-      emit(ProgressLoaded("${l10n.year} $year", (defDays / yearDays) * 100));
+      safeEmit(
+        ProgressLoaded("${l10n.year} $year", (defDays / yearDays) * 100),
+      );
     } else if (mode == ProgressMode.month) {
       final int month = now.month;
       final int monthDays = DateTime(now.year, month + 1, 0).day;
 
-      emit(ProgressLoaded("${l10n.month} $month", (now.day / monthDays) * 100));
+      safeEmit(
+        ProgressLoaded("${l10n.month} $month", (now.day / monthDays) * 100),
+      );
     } else if (mode == ProgressMode.week) {
       final int weekDay = now.sundayFirstWeekday;
       final int weekOfYear = now.weekOfYear;
       const int weekDays = 7;
 
-      emit(
+      safeEmit(
         ProgressLoaded("${l10n.week} $weekOfYear", (weekDay / weekDays) * 100),
       );
     } else if (mode == ProgressMode.day) {
@@ -69,7 +73,7 @@ class ProgressCubit extends Cubit<ProgressState> {
       final DateTime firstDayInYear = DateTime(now.year, 1, 1);
       final int dayOfYear = todayMidnight.difference(firstDayInYear).inDays + 1;
 
-      emit(
+      safeEmit(
         ProgressLoaded(
           "${l10n.day} $dayOfYear",
           (passedHours / totalHoursInDay) * 100,

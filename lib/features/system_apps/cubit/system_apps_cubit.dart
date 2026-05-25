@@ -1,8 +1,11 @@
 import "dart:async";
+import "dart:io";
 
 import "package:flutter/material.dart";
 import "package:flutter_bloc/flutter_bloc.dart";
 import "package:flutter_device_apps/flutter_device_apps.dart";
+
+import "../../../core/extensions/extensions.dart";
 
 class SystemAppsState {}
 
@@ -24,7 +27,12 @@ class SystemAppsCubit extends Cubit<SystemAppsState> {
   StreamSubscription<AppChangeEvent>? _appsSubscription;
 
   void getApps() async {
-    emit(SystemAppsLoading());
+    if (!Platform.isAndroid) {
+      safeEmit(SystemAppsLoaded(apps: [], appsCount: 0));
+      return;
+    }
+
+    safeEmit(SystemAppsLoading());
 
     _apps = await FlutterDeviceApps.listApps(
       includeSystem: true,
@@ -34,7 +42,7 @@ class SystemAppsCubit extends Cubit<SystemAppsState> {
 
     _sortApps(_apps);
 
-    emit(SystemAppsLoaded(apps: _apps, appsCount: _apps.length));
+    safeEmit(SystemAppsLoaded(apps: _apps, appsCount: _apps.length));
 
     _startListeningToChanges();
   }
@@ -55,7 +63,7 @@ class SystemAppsCubit extends Cubit<SystemAppsState> {
 
         if (event.type == AppChangeType.removed) {
           _apps.removeWhere((app) => app.packageName == packageName);
-          emit(SystemAppsLoaded(apps: _apps, appsCount: _apps.length));
+          safeEmit(SystemAppsLoaded(apps: _apps, appsCount: _apps.length));
         } else if (event.type == AppChangeType.installed) {
           final AppInfo? newApp = await FlutterDeviceApps.getApp(
             packageName,
@@ -65,7 +73,7 @@ class SystemAppsCubit extends Cubit<SystemAppsState> {
           if (newApp != null) {
             _apps.add(newApp);
             _sortApps(_apps);
-            emit(SystemAppsLoaded(apps: _apps, appsCount: _apps.length));
+            safeEmit(SystemAppsLoaded(apps: _apps, appsCount: _apps.length));
           }
         } else if (event.type == AppChangeType.updated) {
           final AppInfo? updatedApp = await FlutterDeviceApps.getApp(
@@ -81,7 +89,7 @@ class SystemAppsCubit extends Cubit<SystemAppsState> {
               _apps[index] = updatedApp;
               _sortApps(_apps);
             }
-            emit(SystemAppsLoaded(apps: _apps, appsCount: _apps.length));
+            safeEmit(SystemAppsLoaded(apps: _apps, appsCount: _apps.length));
           }
         }
       },

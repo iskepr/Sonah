@@ -8,8 +8,11 @@ environment:
 
 dependencies:
   adhan: ^2.0.0+1
+  android_intent_plus: ^6.0.0
+  async_wallpaper: ^3.1.0
   battery_plus: ^7.0.0
   cupertino_icons: ^1.0.8
+  dynamic_color: ^1.8.1
   external_app_launcher: ^4.0.3
   flutter:
     sdk: flutter
@@ -24,6 +27,7 @@ dependencies:
   lucide_icons_flutter: ^3.1.14
   permission_handler: ^12.0.1
   url_launcher: ^6.3.2
+  wallpaper_handler: ^0.0.3
 
 dev_dependencies:
   flutter_lints: ^6.0.0

@@ -2,6 +2,8 @@ import "dart:async";
 import "dart:ui";
 import "package:flutter_bloc/flutter_bloc.dart";
 
+import "../../../core/extensions/extensions.dart";
+
 class ClockState {}
 
 class ClockInitial extends ClockState {}
@@ -33,9 +35,10 @@ class ClockCubit extends Cubit<ClockState> {
 
   static String _format(int value) => value.toString().padLeft(2, "0");
 
-  void load() => _timer = Timer.periodic(const Duration(seconds: 10), (timer) {
-    emit(ClockLoaded(_getCurrentTime()));
-  });
+  void load() => _timer = Timer.periodic(
+    const Duration(seconds: 10),
+    (timer) => safeEmit(ClockLoaded(_getCurrentTime())),
+  );
 
   @override
   Future<void> close() {

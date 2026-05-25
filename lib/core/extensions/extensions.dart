@@ -1,4 +1,5 @@
 import "package:flutter/material.dart";
+import "package:flutter_bloc/flutter_bloc.dart";
 
 export "date_time_extensions.dart";
 export "string_extensions.dart";
@@ -25,6 +26,13 @@ extension NavigationHelpers on BuildContext {
     // } else {
     // go(kRouteHome);
     // }
+  }
+}
+
+extension CubitSafeEmit<T> on Cubit<T> {
+  void safeEmit(T state) {
+    // ignore: invalid_use_of_visible_for_testing_member, invalid_use_of_protected_member
+    if (!isClosed) emit(state);
   }
 }
 

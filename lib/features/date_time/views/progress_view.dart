@@ -44,23 +44,21 @@ class _ProgressViewState extends State<ProgressView> {
                     horizontal: kMediumPadding,
                   ),
                   decoration: BoxDecoration(
-                    color: context.text,
+                    color: context.primary,
                     borderRadius: const BorderRadius.only(
                       topLeft: Radius.circular(15),
                       bottomLeft: Radius.circular(15),
                     ),
                   ),
-                  child: SafeArea(
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(now, style: TextStyle(color: context.background)),
-                        Text(
-                          "${defsPers.toInt()}%",
-                          style: TextStyle(color: context.background),
-                        ),
-                      ],
-                    ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(now, style: TextStyle(color: context.text)),
+                      Text(
+                        "${defsPers.toInt()}%",
+                        style: TextStyle(color: context.text),
+                      ),
+                    ],
                   ),
                 ),
               ),
