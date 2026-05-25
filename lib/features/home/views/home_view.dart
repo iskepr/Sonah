@@ -1,8 +1,8 @@
-import "dart:io";
-
 import "package:flutter/material.dart";
 import "package:flutter/services.dart";
 
+import "../../../core/utils/platform_utils.dart";
+import "../../athan/views/next_athan_view.dart";
 import "../../battery/views/battery_view.dart";
 import "../../date_time/views/clock_view.dart";
 import "../../date_time/views/progress_view.dart";
@@ -41,7 +41,7 @@ class _HomeViewState extends State<HomeView> with WidgetsBindingObserver {
   }
 
   Future<void> _fetchSystemWallpaper() async {
-    if (!Platform.isAndroid) return;
+    if (!PlatformUtils.isAndroid) return;
     try {
       final Uint8List? result = await platform.invokeMethod("getWallpaper");
       if (mounted) {
@@ -79,7 +79,13 @@ class _HomeViewState extends State<HomeView> with WidgetsBindingObserver {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [ClockView(), BatteryView()],
+                        children: [
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [ClockView(), NextAthanView()],
+                          ),
+                          BatteryView(),
+                        ],
                       ),
                       AppsListView(),
                     ],

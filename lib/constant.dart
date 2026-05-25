@@ -37,3 +37,6 @@ final S l10n = S.current;
 final GlobalKey<ScaffoldMessengerState> messengerKey =
     GlobalKey<ScaffoldMessengerState>();
 final GlobalKey<NavigatorState> kNavigatorKey = GlobalKey<NavigatorState>();
+
+// Links
+const String kSkeprWebsite = "https://skepr.vercel.app";

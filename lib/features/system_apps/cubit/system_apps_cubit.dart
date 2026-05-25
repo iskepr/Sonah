@@ -1,11 +1,11 @@
 import "dart:async";
-import "dart:io";
 
 import "package:flutter/material.dart";
 import "package:flutter_bloc/flutter_bloc.dart";
 import "package:flutter_device_apps/flutter_device_apps.dart";
 
 import "../../../core/extensions/extensions.dart";
+import "../../../core/utils/platform_utils.dart";
 
 class SystemAppsState {}
 
@@ -27,7 +27,7 @@ class SystemAppsCubit extends Cubit<SystemAppsState> {
   StreamSubscription<AppChangeEvent>? _appsSubscription;
 
   void getApps() async {
-    if (!Platform.isAndroid) {
+    if (!PlatformUtils.isAndroid) {
       safeEmit(SystemAppsLoaded(apps: [], appsCount: 0));
       return;
     }

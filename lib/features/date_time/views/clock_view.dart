@@ -7,19 +7,16 @@ class ClockView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => ClockCubit()..load(),
-      child: BlocBuilder<ClockCubit, ClockState>(
-        builder: (context, state) {
-          if (state is ClockLoaded) {
-            return Text(
-              state.clock,
-              style: const TextStyle(fontSize: 48, fontWeight: FontWeight.bold),
-            );
-          }
-          return const CircularProgressIndicator();
-        },
-      ),
+    return BlocBuilder<ClockCubit, ClockState>(
+      builder: (context, state) {
+        if (state is ClockLoaded) {
+          return Text(
+            state.clock,
+            style: const TextStyle(fontSize: 48, fontWeight: FontWeight.bold),
+          );
+        }
+        return const CircularProgressIndicator();
+      },
     );
   }
 }

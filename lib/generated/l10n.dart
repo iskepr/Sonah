@@ -84,6 +84,21 @@ class S {
     return Intl.message('Edit', name: 'edit', desc: '', args: []);
   }
 
+  /// `Confirm`
+  String get confirm {
+    return Intl.message('Confirm', name: 'confirm', desc: '', args: []);
+  }
+
+  /// `Cancel`
+  String get cancel {
+    return Intl.message('Cancel', name: 'cancel', desc: '', args: []);
+  }
+
+  /// `Close`
+  String get close {
+    return Intl.message('Close', name: 'close', desc: '', args: []);
+  }
+
   /// `App Name`
   String get appName {
     return Intl.message('App Name', name: 'appName', desc: '', args: []);
@@ -137,6 +152,51 @@ class S {
   /// `Day`
   String get day {
     return Intl.message('Day', name: 'day', desc: '', args: []);
+  }
+
+  /// `within`
+  String get within {
+    return Intl.message('within', name: 'within', desc: '', args: []);
+  }
+
+  /// `Prayer Times`
+  String get prayerTimes {
+    return Intl.message(
+      'Prayer Times',
+      name: 'prayerTimes',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Fajr`
+  String get fajr {
+    return Intl.message('Fajr', name: 'fajr', desc: '', args: []);
+  }
+
+  /// `Sunrise`
+  String get sunrise {
+    return Intl.message('Sunrise', name: 'sunrise', desc: '', args: []);
+  }
+
+  /// `Dhuhr`
+  String get dhuhr {
+    return Intl.message('Dhuhr', name: 'dhuhr', desc: '', args: []);
+  }
+
+  /// `Asr`
+  String get asr {
+    return Intl.message('Asr', name: 'asr', desc: '', args: []);
+  }
+
+  /// `Maghrib`
+  String get maghrib {
+    return Intl.message('Maghrib', name: 'maghrib', desc: '', args: []);
+  }
+
+  /// `Isha`
+  String get isha {
+    return Intl.message('Isha', name: 'isha', desc: '', args: []);
   }
 }
 

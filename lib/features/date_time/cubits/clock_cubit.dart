@@ -1,8 +1,8 @@
 import "dart:async";
-import "dart:ui";
 import "package:flutter_bloc/flutter_bloc.dart";
 
 import "../../../core/extensions/extensions.dart";
+import "../../../core/service/ticker_service.dart";
 
 class ClockState {}
 
@@ -14,35 +14,24 @@ class ClockLoaded extends ClockState {
 }
 
 class ClockCubit extends Cubit<ClockState> {
-  ClockCubit() : super(ClockLoaded(_getCurrentTime()));
+  final TickerService tickerService;
+  StreamSubscription? _subscription;
+  int? _lastMinute;
 
-  Timer? _timer;
-  static const bool withSeconds = false;
+  static String get nowString => DateTime.now().toTimeOnly(showPeriod: false);
 
-  static String _getCurrentTime() {
-    final now = DateTime.now();
-    final bool is24Hour = PlatformDispatcher.instance.alwaysUse24HourFormat;
-
-    if (is24Hour) {
-      return "${_format(now.hour)}:${_format(now.minute)}${withSeconds ? ":${_format(now.second)}" : ""}";
-    } else {
-      int hour = now.hour % 12;
-      hour = hour == 0 ? 12 : hour;
-      // final String period = now.hour >= 12 ? "PM" : "AM";
-      return "${_format(hour)}:${_format(now.minute)}${withSeconds ? ":${_format(now.second)}" : ""}";
-    }
+  ClockCubit({required this.tickerService}) : super(ClockLoaded(nowString)) {
+    _subscription = tickerService.timeStream.listen((now) {
+      if (_lastMinute == null || _lastMinute != now.minute) {
+        _lastMinute = now.minute;
+        emit(ClockLoaded(nowString));
+      }
+    });
   }
-
-  static String _format(int value) => value.toString().padLeft(2, "0");
-
-  void load() => _timer = Timer.periodic(
-    const Duration(seconds: 10),
-    (timer) => safeEmit(ClockLoaded(_getCurrentTime())),
-  );
 
   @override
   Future<void> close() {
-    _timer?.cancel();
+    _subscription?.cancel();
     return super.close();
   }
 }

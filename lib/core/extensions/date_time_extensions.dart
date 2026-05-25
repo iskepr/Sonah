@@ -1,5 +1,68 @@
 import "package:intl/intl.dart";
 
+extension DateTimeFormat on DateTime {
+  String toTimeOnly({bool showPeriod = true, bool isArabic = true}) {
+    final e = isUtc ? toLocal() : this;
+    final h = e.hour % 12 == 0 ? 12 : e.hour % 12;
+
+    final p = e.hour >= 12 ? (isArabic ? "م" : "PM") : (isArabic ? "ص" : "AM");
+
+    return showPeriod
+        ? "$h:${e.minute.toString().padLeft(2, "0")} $p"
+        : "$h:${e.minute.toString().padLeft(2, "0")}";
+  }
+
+  String get dateOnlyy {
+    final e = isUtc ? toLocal() : this;
+    final now = DateTime.now();
+    final String yearSuffix = now.year == e.year
+        ? ""
+        : "/${e.year.toString().substring(2)}";
+    return "${e.day}/${e.month}$yearSuffix";
+  }
+
+  String get dateOnly {
+    final e = isUtc ? toLocal() : this;
+    final now = DateTime.now();
+    return DateFormat("d MMMM ${now.year == e.year ? "" : "yy"}").format(e);
+  }
+
+  String get fullDateTime => "$dateOnly $toTimeOnly";
+
+  String get smartFormat {
+    final e = isUtc ? toLocal() : this;
+    final now = DateTime.now();
+    if (e.day == now.day && e.month == now.month && e.year == now.year) {
+      return toTimeOnly();
+    }
+    return dateOnly;
+  }
+
+  String get fullDate {
+    final e = isUtc ? toLocal() : this;
+    return "${e.day}/${e.month}/${e.year}";
+  }
+
+  String get fullSmartFormat {
+    final e = isUtc ? toLocal() : this;
+    final now = DateTime.now();
+    if (e.day == now.day && e.month == now.month && e.year == now.year) {
+      return toTimeOnly();
+    }
+    return fullDateTime;
+  }
+}
+
+class DateTimeHelper {
+  static DateTime get now => DateTime.now().toUtc();
+
+  static String get nowIso => now.toIso8601String();
+
+  static String afterMinutesIso(int minutes) {
+    return now.add(Duration(minutes: minutes)).toIso8601String();
+  }
+}
+
 extension TimeExtension on String {
   int? get weekDayNumber {
     return int.tryParse(this);
@@ -44,5 +107,23 @@ extension DateTimeWeekUtils on DateTime {
     final int daysPassed = currentMidnight.difference(firstDayOfYear).inDays;
 
     return ((daysPassed + firstDayShift) / 7).floor() + 1;
+  }
+}
+
+extension CountdownExtension on DateTime {
+  String differenceToFormattedString([DateTime? fromTime]) {
+    final start = fromTime ?? DateTime.now();
+
+    final duration = difference(start);
+
+    if (duration.isNegative || duration.inSeconds <= 0) {
+      return "00:00:00";
+    }
+
+    final hours = duration.inHours;
+    final minutes = (duration.inMinutes % 60).toString().padLeft(2, "0");
+    final seconds = (duration.inSeconds % 60).toString().padLeft(2, "0");
+
+    return "${hours == 0 ? "" : "$hours:"}$minutes:$seconds";
   }
 }

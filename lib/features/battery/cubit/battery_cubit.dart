@@ -4,6 +4,7 @@ import "package:flutter/material.dart";
 import "package:flutter_bloc/flutter_bloc.dart";
 
 import "../../../core/extensions/extensions.dart";
+import "../../../core/service/ticker_service.dart";
 
 @immutable
 abstract class BatteryCubitState {}
@@ -17,25 +18,26 @@ class BatteryLoaded extends BatteryCubitState {
 }
 
 class BatteryCubit extends Cubit<BatteryCubitState> {
+  final TickerService tickerService;
   final Battery _battery = Battery();
-  StreamSubscription<BatteryState>? _subscription;
-  Timer? _timer;
 
-  BatteryCubit() : super(BatteryInitial()) {
+  StreamSubscription? _tickerSubscription;
+  StreamSubscription<BatteryState>? _batteryStateSubscription;
+
+  BatteryCubit({required this.tickerService}) : super(BatteryInitial()) {
     _initBattery();
   }
 
   void _initBattery() async {
     await _updateBatteryInfo();
 
-    _subscription = _battery.onBatteryStateChanged.listen(
+    _batteryStateSubscription = _battery.onBatteryStateChanged.listen(
       (_) async => await _updateBatteryInfo(),
     );
 
-    _timer = Timer.periodic(
-      const Duration(minutes: 1),
-      (_) async => await _updateBatteryInfo(),
-    );
+    _tickerSubscription = tickerService.timeStream.listen((now) async {
+      if (now.second == 0) await _updateBatteryInfo();
+    });
   }
 
   Future<void> _updateBatteryInfo() async {
@@ -51,8 +53,8 @@ class BatteryCubit extends Cubit<BatteryCubitState> {
 
   @override
   Future<void> close() {
-    _timer?.cancel();
-    _subscription?.cancel();
+    _tickerSubscription?.cancel();
+    _batteryStateSubscription?.cancel();
     return super.close();
   }
 }

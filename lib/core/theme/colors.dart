@@ -33,8 +33,8 @@ extension ThemeContext on BuildContext {
   Color get shadow => colorScheme.shadow;
   Color get background => colorScheme.background;
   Color get foreground => colorScheme.surface;
-  Color get error => colorScheme.error;
-  Color get success => colorScheme.tertiary;
+  Color get error => AppColors.error;
+  Color get success => AppColors.success;
   Color get warning => AppColors.warning;
 }
 

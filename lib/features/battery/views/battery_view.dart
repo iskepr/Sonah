@@ -4,6 +4,7 @@ import "package:flutter_bloc/flutter_bloc.dart";
 import "package:lucide_icons_flutter/lucide_icons.dart";
 
 import "../../../constant.dart";
+import "../../../core/theme/colors.dart";
 import "../cubit/battery_cubit.dart";
 
 class BatteryView extends StatelessWidget {
@@ -11,39 +12,46 @@ class BatteryView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => BatteryCubit(),
-      child: BlocBuilder<BatteryCubit, BatteryCubitState>(
-        builder: (context, state) {
-          if (state is BatteryLoaded) {
-            final bl = state.batteryLevel;
-            final bs = state.batteryState;
-            return Row(
-              spacing: kSmallPadding,
-              children: [
-                Text("$bl%"),
-                if (bs == BatteryState.charging)
-                  const Icon(LucideIcons.batteryCharging)
-                else if (bs == BatteryState.full)
-                  const Icon(LucideIcons.batteryFull)
-                else if (bs == BatteryState.connectedNotCharging)
-                  const Icon(LucideIcons.batteryWarning)
-                else if (bs == BatteryState.unknown)
-                  const Icon(LucideIcons.battery)
-                else if (bl < 10)
-                  const Icon(LucideIcons.batteryWarning)
-                else if (bl < 20)
-                  const Icon(LucideIcons.batteryLow)
-                else if (bl <= 50)
-                  const Icon(LucideIcons.batteryMedium)
-                else
-                  const Icon(LucideIcons.batteryFull),
-              ],
-            );
-          }
-          return const Icon(LucideIcons.battery);
-        },
-      ),
+    return BlocBuilder<BatteryCubit, BatteryCubitState>(
+      builder: (context, state) {
+        if (state is BatteryLoaded) {
+          final bl = state.batteryLevel;
+          final bs = state.batteryState;
+
+          final Color? iconColor = switch ((bl, bs)) {
+            (final int level, _) when level < 10 => context.error,
+            (final int level, _) when level < 25 => context.warning,
+            (100, BatteryState.charging) => context.error,
+            (_, BatteryState.charging) => context.success,
+            _ => null,
+          };
+
+          return Row(
+            spacing: kSmallPadding,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              if (bl < 90) Text("$bl%", style: TextStyle(color: iconColor)),
+              Icon(_getBatteryIconData(bs, bl), color: iconColor),
+            ],
+          );
+        }
+        return const Icon(LucideIcons.battery);
+      },
     );
+  }
+
+  IconData _getBatteryIconData(BatteryState state, int level) {
+    if (state == BatteryState.charging) return LucideIcons.batteryCharging;
+    if (state == BatteryState.full) return LucideIcons.batteryFull;
+    if (state == BatteryState.connectedNotCharging) {
+      return LucideIcons.batteryWarning;
+    }
+    if (state == BatteryState.unknown) return LucideIcons.battery;
+
+    if (level < 10) return LucideIcons.batteryWarning;
+    if (level < 20) return LucideIcons.batteryLow;
+    if (level <= 50) return LucideIcons.batteryMedium;
+
+    return LucideIcons.batteryFull;
   }
 }

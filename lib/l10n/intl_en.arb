@@ -5,6 +5,9 @@
     "add": "Add",
     "remove": "Remove",
     "edit": "Edit",
+    "confirm": "Confirm",
+    "cancel": "Cancel",
+    "close": "Close",
     "appName": "App Name",
     "appVersion": "App Version",
     "appSize": "App Size",
@@ -15,5 +18,13 @@
     "year": "Year",
     "month": "Month",
     "week": "Week",
-    "day": "Day"
+    "day": "Day",
+    "within": "within",
+    "prayerTimes": "Prayer Times",
+    "fajr": "Fajr",
+    "sunrise": "Sunrise",
+    "dhuhr": "Dhuhr",
+    "asr": "Asr",
+    "maghrib": "Maghrib",
+    "isha": "Isha"
 }
