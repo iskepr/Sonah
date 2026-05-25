@@ -1,48 +1,43 @@
-<manifest xmlns:android="http://schemas.android.com/apk/res/android">
-    <!-- 1. صلاحيات الإنترنت والشراء -->
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
     <uses-permission android:name="android.permission.INTERNET"/>
-    <!-- للشراء داخل التطبيق -->
     <uses-permission android:name="com.android.vending.BILLING" />
 
-    <!-- 2. صلاحيات اللانشر وتخصيص الواجهة -->
-    <!-- عشان يبقى اللانشر الافتراضي -->
     <uses-permission android:name="android.permission.SET_PREFERRED_APPLICATIONS"/>
-    <!-- تغيير الخلفية -->
     <uses-permission android:name="android.permission.SET_WALLPAPER"/>
-    <!-- فتح شريط الإشعارات -->
     <uses-permission android:name="android.permission.EXPAND_STATUS_BAR"/>
-    <!-- عرض الويدجت -->
     <uses-permission android:name="android.permission.BIND_APPWIDGET" />
-    <!-- إضافة اختصارات -->
     <uses-permission android:name="com.android.launcher.permission.INSTALL_SHORTCUT" />
 
-    <!-- 3. الوصول للملفات والتطبيقات -->
-    <!-- قراءة الملفات/الصور -->
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
-    <!-- جلب قائمة التطبيقات المثبتة -->
     <uses-permission android:name="android.permission.QUERY_ALL_PACKAGES" />
-    <!-- معرفة المهام الشغالة (صلاحية قديمة بس شغالة) -->
+    <uses-permission android:name="android.permission.REQUEST_DELETE_PACKAGES" />
     <uses-permission android:name="android.permission.GET_TASKS" />
+    <uses-permission android:name="android.permission.PACKAGE_USAGE_STATS" tools:ignore="ProtectedPermissions" />
 
-    <!-- 4. نظام المنبه والرخامة (المهام الحرجة) -->
-    <!-- ضبط منبه دقيق -->
     <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
-    <!-- استخدام المنبه في أندرويد 13+ -->
     <uses-permission android:name="android.permission.USE_EXACT_ALARM" />
-    <!-- فتح شاشة كاملة وقت المنبه -->
     <uses-permission android:name="android.permission.USE_FULL_SCREEN_INTENT" />
-    <!-- الرسم فوق التطبيقات (الطبقة العلوية) -->
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
+    <uses-permission android:name="android.permission.USES_POLICY_FORCE_LOCK" />
 
-    <!-- 5. ضمان الاستمرارية (عشان ميتقفلش) -->
-    <!-- التشغيل التلقائي بعد ريستارت الموبايل -->
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
-    <!-- منع المعالج من النوم وقت الشغل -->
     <uses-permission android:name="android.permission.WAKE_LOCK" />
-    <!-- تشغيل خدمة في الواجهة -->
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_SPECIAL_USE" />
+
+    <uses-permission android:name="android.permission.READ_CALENDAR" />
+    <uses-permission android:name="android.permission.WRITE_CALENDAR" />
+    <uses-permission android:name="android.permission.READ_CONTACTS" />
+
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    <uses-permission android:name="android.permission.BIND_NOTIFICATION_LISTENER_SERVICE" tools:ignore="ProtectedPermissions" />
 
     <application android:label="سُنة" android:name="${applicationName}" android:icon="@mipmap/ic_launcher">
+
         <activity android:name=".MainActivity" android:exported="true" android:launchMode="singleInstance" android:taskAffinity="" android:theme="@style/LaunchTheme" android:configChanges="orientation|keyboardHidden|keyboard|screenSize|smallestScreenSize|locale|layoutDirection|fontScale|screenLayout|density|uiMode" android:hardwareAccelerated="true" android:windowSoftInputMode="adjustResize">
 
             <meta-data android:name="io.flutter.embedding.android.NormalTheme" android:resource="@style/NormalTheme" />
@@ -50,12 +45,31 @@
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>
-
                 <category android:name="android.intent.category.HOME" />
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
+
+            <intent-filter>
+                <action android:name="android.intent.action.MANAGE_PERMISSION_APPS" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
         </activity>
+
         <meta-data android:name="flutterEmbedding" android:value="2" />
+
+        <receiver android:name=".MyDeviceAdminReceiver" android:label="رقيب سُنة" android:permission="android.permission.BIND_DEVICE_ADMIN" android:exported="true">
+            <meta-data android:name="android.app.device_admin" android:resource="@xml/device_admin_rules" />
+            <intent-filter>
+                <action android:name="android.app.action.DEVICE_ADMIN_ENABLED" />
+            </intent-filter>
+        </receiver>
+
+        <service android:name=".NotificationListener" android:label="سُنة Notification Service" android:permission="android.permission.BIND_NOTIFICATION_LISTENER_SERVICE" android:exported="true">
+            <intent-filter>
+                <action android:name="android.service.notification.NotificationListenerService" />
+            </intent-filter>
+        </service>
+
     </application>
 
     <queries>
@@ -63,11 +77,9 @@
             <action android:name="android.intent.action.PROCESS_TEXT"/>
             <data android:mimeType="text/plain"/>
         </intent>
-
         <intent>
             <action android:name="android.intent.action.MAIN" />
         </intent>
-
         <package android:name="net.pulsesecure.pulsesecure" />
     </queries>
 </manifest>

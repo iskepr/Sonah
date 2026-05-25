@@ -1,0 +1,111 @@
+import "dart:typed_data";
+
+import "package:flutter/material.dart";
+import "package:flutter_bloc/flutter_bloc.dart";
+import "package:flutter_device_apps/flutter_device_apps.dart";
+import "package:lucide_icons_flutter/lucide_icons.dart";
+
+import "../../../constant.dart";
+import "../../../core/widgets/show_bottom_sheet.dart";
+import "../cubit/system_apps_cubit.dart";
+
+class AppsListView extends StatelessWidget {
+  const AppsListView({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocProvider(
+      create: (context) => SystemAppsCubit()..getApps(),
+      child: BlocBuilder<SystemAppsCubit, SystemAppsState>(
+        builder: (context, state) {
+          if (state is! SystemAppsLoaded) {
+            return const Center(child: CircularProgressIndicator());
+          }
+          final apps = state.apps;
+          return AppsListTile(apps: apps);
+        },
+      ),
+    );
+  }
+}
+
+class AppsListTile extends StatelessWidget {
+  const AppsListTile({super.key, required this.apps});
+  final List<AppInfo> apps;
+
+  @override
+  Widget build(BuildContext context) {
+    return Expanded(
+      child: ListView.builder(
+        itemCount: apps.length,
+        itemBuilder: (context, index) {
+          final AppInfo app = apps[index];
+          final appName = app.appName ?? "";
+          final String packageName = app.packageName ?? "";
+          final bool isFavorite = index % 2 == 0;
+
+          return ListTile(
+            leading: AppIcon(iconBytes: app.iconBytes),
+            title: Text(appName),
+            onLongPress: () async {
+              showMyBottomSheet(
+                context: context,
+                child: Column(
+                  children: [
+                    ListTile(
+                      title: Text(appName),
+                      leading: AppIcon(iconBytes: app.iconBytes),
+                      subtitle: const Text("3 ساعات"),
+                      trailing: const Icon(LucideIcons.circleAlert),
+
+                      onTap: () async =>
+                          await FlutterDeviceApps.openAppSettings(packageName),
+                    ),
+                    ListTile(
+                      title: Text(
+                        "${isFavorite ? "${l10n.remove} ${l10n.from}" : "${l10n.add} ${l10n.to}"} ${l10n.favorite}",
+                      ),
+                      leading: Icon(
+                        isFavorite ? LucideIcons.starOff : LucideIcons.star,
+                      ),
+                    ),
+                    ListTile(
+                      title: Text(l10n.edit),
+                      leading: const Icon(LucideIcons.edit),
+                      onTap: () async =>
+                          await FlutterDeviceApps.uninstallApp(packageName),
+                    ),
+                    ListTile(
+                      title: Text(l10n.unInstall),
+                      leading: const Icon(LucideIcons.trash2),
+                      onTap: () async =>
+                          await FlutterDeviceApps.uninstallApp(packageName),
+                    ),
+                  ],
+                ),
+              );
+            },
+            onTap: () async => await FlutterDeviceApps.openApp(packageName),
+          );
+        },
+      ),
+    );
+  }
+}
+
+class AppIcon extends StatelessWidget {
+  const AppIcon({super.key, this.iconBytes});
+  final Uint8List? iconBytes;
+
+  @override
+  Widget build(BuildContext context) {
+    if (iconBytes != null) {
+      return ClipRRect(
+        borderRadius: BorderRadius.circular(kLargeFont / 1.5),
+        child: Image.memory(iconBytes!, width: kLargeFont * 2),
+      );
+    } else {
+      return const Icon(LucideIcons.circleAlert, size: kLargeFont * 2);
+    }
+  }
+}

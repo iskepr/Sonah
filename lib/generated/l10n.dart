@@ -54,6 +54,71 @@ class S {
     return Localizations.of<S>(context, S);
   }
 
+  /// `App Info`
+  String get appInfo {
+    return Intl.message('App Info', name: 'appInfo', desc: '', args: []);
+  }
+
+  /// `Install`
+  String get install {
+    return Intl.message('Install', name: 'install', desc: '', args: []);
+  }
+
+  /// `Uninstall`
+  String get unInstall {
+    return Intl.message('Uninstall', name: 'unInstall', desc: '', args: []);
+  }
+
+  /// `Add`
+  String get add {
+    return Intl.message('Add', name: 'add', desc: '', args: []);
+  }
+
+  /// `Remove`
+  String get remove {
+    return Intl.message('Remove', name: 'remove', desc: '', args: []);
+  }
+
+  /// `Edit`
+  String get edit {
+    return Intl.message('Edit', name: 'edit', desc: '', args: []);
+  }
+
+  /// `App Name`
+  String get appName {
+    return Intl.message('App Name', name: 'appName', desc: '', args: []);
+  }
+
+  /// `App Version`
+  String get appVersion {
+    return Intl.message('App Version', name: 'appVersion', desc: '', args: []);
+  }
+
+  /// `App Size`
+  String get appSize {
+    return Intl.message('App Size', name: 'appSize', desc: '', args: []);
+  }
+
+  /// `App Icon`
+  String get appIcon {
+    return Intl.message('App Icon', name: 'appIcon', desc: '', args: []);
+  }
+
+  /// `Favorite`
+  String get favorite {
+    return Intl.message('Favorite', name: 'favorite', desc: '', args: []);
+  }
+
+  /// `to`
+  String get to {
+    return Intl.message('to', name: 'to', desc: '', args: []);
+  }
+
+  /// `from`
+  String get from {
+    return Intl.message('from', name: 'from', desc: '', args: []);
+  }
+
   /// `Year`
   String get year {
     return Intl.message('Year', name: 'year', desc: '', args: []);

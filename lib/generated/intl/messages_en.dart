@@ -22,8 +22,21 @@ class MessageLookup extends MessageLookupByLibrary {
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
+    "add": MessageLookupByLibrary.simpleMessage("Add"),
+    "appIcon": MessageLookupByLibrary.simpleMessage("App Icon"),
+    "appInfo": MessageLookupByLibrary.simpleMessage("App Info"),
+    "appName": MessageLookupByLibrary.simpleMessage("App Name"),
+    "appSize": MessageLookupByLibrary.simpleMessage("App Size"),
+    "appVersion": MessageLookupByLibrary.simpleMessage("App Version"),
     "day": MessageLookupByLibrary.simpleMessage("Day"),
+    "edit": MessageLookupByLibrary.simpleMessage("Edit"),
+    "favorite": MessageLookupByLibrary.simpleMessage("Favorite"),
+    "from": MessageLookupByLibrary.simpleMessage("from"),
+    "install": MessageLookupByLibrary.simpleMessage("Install"),
     "month": MessageLookupByLibrary.simpleMessage("Month"),
+    "remove": MessageLookupByLibrary.simpleMessage("Remove"),
+    "to": MessageLookupByLibrary.simpleMessage("to"),
+    "unInstall": MessageLookupByLibrary.simpleMessage("Uninstall"),
     "week": MessageLookupByLibrary.simpleMessage("Week"),
     "year": MessageLookupByLibrary.simpleMessage("Year"),
   };
