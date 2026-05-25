@@ -1,6 +1,6 @@
 import "package:flutter/material.dart";
 import "package:flutter_bloc/flutter_bloc.dart";
-import "../cubit/clock_cubit.dart";
+import "../cubits/clock_cubit.dart";
 
 class ClockView extends StatelessWidget {
   const ClockView({super.key});

@@ -1,8 +1,15 @@
 import "dart:async";
 import "dart:ui";
 import "package:flutter_bloc/flutter_bloc.dart";
-import "clock_state.dart";
-export "clock_state.dart";
+
+class ClockState {}
+
+class ClockInitial extends ClockState {}
+
+class ClockLoaded extends ClockState {
+  final String clock;
+  ClockLoaded(this.clock);
+}
 
 class ClockCubit extends Cubit<ClockState> {
   ClockCubit() : super(ClockLoaded(_getCurrentTime()));
@@ -19,8 +26,8 @@ class ClockCubit extends Cubit<ClockState> {
     } else {
       int hour = now.hour % 12;
       hour = hour == 0 ? 12 : hour;
-      final String period = now.hour >= 12 ? "PM" : "AM";
-      return "${_format(hour)}:${_format(now.minute)}${withSeconds ? ":${_format(now.second)}" : ""}$period";
+      // final String period = now.hour >= 12 ? "PM" : "AM";
+      return "${_format(hour)}:${_format(now.minute)}${withSeconds ? ":${_format(now.second)}" : ""}";
     }
   }
 
