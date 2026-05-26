@@ -1,10 +1,12 @@
 import "package:flutter/material.dart";
 import "package:flutter/services.dart";
 
+import "../../../constant.dart";
 import "../../../core/utils/platform_utils.dart";
 import "../../athan/views/next_athan_view.dart";
 import "../../battery/views/battery_view.dart";
 import "../../date_time/views/clock_view.dart";
+import "../../date_time/views/hijri_date_view.dart";
 import "../../date_time/views/progress_view.dart";
 import "../../system_apps/views/system_apps_view.dart";
 
@@ -54,42 +56,48 @@ class _HomeViewState extends State<HomeView> with WidgetsBindingObserver {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Container(
-        width: double.infinity,
-        height: double.infinity,
-        decoration: BoxDecoration(
-          image: _wallpaperBytes != null
-              ? DecorationImage(
-                  image: MemoryImage(_wallpaperBytes!),
-                  fit: BoxFit.cover,
-                )
-              : null,
-          color: _wallpaperBytes == null ? Colors.black : null,
-        ),
-        child: const SafeArea(
-          child: Column(
+    return Container(
+      decoration: BoxDecoration(
+        image: _wallpaperBytes != null
+            ? DecorationImage(
+                image: MemoryImage(_wallpaperBytes!),
+                fit: BoxFit.cover,
+              )
+            : null,
+        color: _wallpaperBytes == null ? Colors.black : null,
+      ),
+      child: SingleChildScrollView(
+        child: ConstrainedBox(
+          constraints: BoxConstraints(
+            minHeight: MediaQuery.of(context).size.height,
+          ),
+          child: const Column(
+            mainAxisSize: MainAxisSize.min,
+            spacing: kMediumPadding,
             children: [
               ProgressView(),
-              Expanded(
-                child: FractionallySizedBox(
-                  widthFactor: 0.8,
-                  child: Column(
-                    children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [ClockView(), NextAthanView()],
-                          ),
-                          BatteryView(),
-                        ],
-                      ),
-                      AppsListView(),
-                    ],
-                  ),
+              FractionallySizedBox(
+                widthFactor: 0.8,
+                child: Column(
+                  spacing: kMediumPadding,
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            ClockView(),
+                            HijriDateView(),
+                            NextAthanView(),
+                          ],
+                        ),
+                        BatteryView(),
+                      ],
+                    ),
+                    AppsListView(),
+                  ],
                 ),
               ),
             ],

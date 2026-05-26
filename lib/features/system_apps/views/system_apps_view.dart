@@ -6,6 +6,7 @@ import "package:flutter_device_apps/flutter_device_apps.dart";
 import "package:lucide_icons_flutter/lucide_icons.dart";
 
 import "../../../constant.dart";
+import "../../../core/extensions/extensions.dart";
 import "../../../core/widgets/show_bottom_sheet.dart";
 import "../cubit/system_apps_cubit.dart";
 
@@ -35,60 +36,65 @@ class AppsListTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Expanded(
-      child: ListView.builder(
-        itemCount: apps.length,
-        itemBuilder: (context, index) {
-          final AppInfo app = apps[index];
-          final appName = app.appName ?? "";
-          final String packageName = app.packageName ?? "";
-          final bool isFavorite = index % 2 == 0;
+    return ListView.builder(
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
 
-          return ListTile(
-            leading: AppIcon(iconBytes: app.iconBytes),
-            title: Text(appName),
-            onLongPress: () async {
-              showMyBottomSheet(
-                context: context,
-                child: Column(
-                  children: [
-                    ListTile(
-                      title: Text(appName),
-                      leading: AppIcon(iconBytes: app.iconBytes),
-                      subtitle: const Text("3 ساعات"),
-                      trailing: const Icon(LucideIcons.circleAlert),
+      itemCount: apps.length,
+      itemBuilder: (context, index) {
+        final AppInfo app = apps[index];
+        final appName = app.appName ?? "";
+        final String packageName = app.packageName ?? "";
+        final bool isFavorite = index % 2 == 0;
 
-                      onTap: () async =>
-                          await FlutterDeviceApps.openAppSettings(packageName),
+        return ListTile(
+          contentPadding: const EdgeInsets.symmetric(vertical: kSmallPadding),
+          leading: AppIcon(iconBytes: app.iconBytes),
+          title: Text(appName),
+          onLongPress: () async {
+            showMyBottomSheet(
+              context: context,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  ListTile(
+                    title: Text(appName),
+                    leading: AppIcon(iconBytes: app.iconBytes),
+                    subtitle: const Text("3 ساعات"),
+                    trailing: const Icon(LucideIcons.circleAlert),
+                    onTap: () async =>
+                        await FlutterDeviceApps.openAppSettings(packageName),
+                  ),
+                  ListTile(
+                    title: Text(
+                      "${isFavorite ? "${l10n.remove} ${l10n.from}" : "${l10n.add} ${l10n.to}"} ${l10n.favorite}",
                     ),
-                    ListTile(
-                      title: Text(
-                        "${isFavorite ? "${l10n.remove} ${l10n.from}" : "${l10n.add} ${l10n.to}"} ${l10n.favorite}",
-                      ),
-                      leading: Icon(
-                        isFavorite ? LucideIcons.starOff : LucideIcons.star,
-                      ),
+                    leading: Icon(
+                      isFavorite ? LucideIcons.starOff : LucideIcons.star,
                     ),
-                    ListTile(
-                      title: Text(l10n.edit),
-                      leading: const Icon(LucideIcons.edit),
-                      onTap: () async =>
-                          await FlutterDeviceApps.uninstallApp(packageName),
-                    ),
+                  ),
+                  ListTile(
+                    title: Text(l10n.edit),
+                    leading: const Icon(LucideIcons.edit),
+                    onTap: () async =>
+                        await FlutterDeviceApps.uninstallApp(packageName),
+                  ),
+                  if (!(app.isSystem ?? false))
                     ListTile(
                       title: Text(l10n.unInstall),
                       leading: const Icon(LucideIcons.trash2),
-                      onTap: () async =>
-                          await FlutterDeviceApps.uninstallApp(packageName),
+                      onTap: () async {
+                        await FlutterDeviceApps.uninstallApp(packageName);
+                        if (context.mounted) context.close();
+                      },
                     ),
-                  ],
-                ),
-              );
-            },
-            onTap: () async => await FlutterDeviceApps.openApp(packageName),
-          );
-        },
-      ),
+                ],
+              ),
+            );
+          },
+          onTap: () async => await FlutterDeviceApps.openApp(packageName),
+        );
+      },
     );
   }
 }
