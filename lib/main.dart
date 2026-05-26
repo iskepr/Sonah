@@ -43,19 +43,26 @@ class Sonah extends StatelessWidget {
           ],
           supportedLocales: S.delegate.supportedLocales,
 
-          home: MultiBlocProvider(
-            providers: [
-              BlocProvider(
-                create: (context) => ClockCubit(tickerService: tickerService),
-              ),
-              BlocProvider(
-                create: (context) => BatteryCubit(tickerService: tickerService),
-              ),
-              BlocProvider(
-                create: (context) => AthanCubit(tickerService: tickerService),
-              ),
-            ],
-            child: const Scaffold(body: HomeView()),
+          home: RepositoryProvider<TickerService>.value(
+            value: tickerService,
+            child: MultiBlocProvider(
+              providers: [
+                BlocProvider(
+                  create: (context) =>
+                      AthanCubit(tickerService: context.read<TickerService>()),
+                ),
+                BlocProvider(
+                  create: (context) =>
+                      ClockCubit(tickerService: context.read<TickerService>()),
+                ),
+                BlocProvider(
+                  create: (context) => BatteryCubit(
+                    tickerService: context.read<TickerService>(),
+                  ),
+                ),
+              ],
+              child: const Scaffold(body: HomeView()),
+            ),
           ),
 
           themeMode: ThemeMode.system,

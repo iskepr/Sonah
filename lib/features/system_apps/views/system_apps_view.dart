@@ -108,10 +108,10 @@ class AppIcon extends StatelessWidget {
     if (iconBytes != null) {
       return ClipRRect(
         borderRadius: BorderRadius.circular(kLargeFont / 1.5),
-        child: Image.memory(iconBytes!, width: kLargeFont * 2),
+        child: Image.memory(iconBytes!, width: kLargeFont * 1.8),
       );
     } else {
-      return const Icon(LucideIcons.circleAlert, size: kLargeFont * 2);
+      return const Icon(LucideIcons.circleAlert, size: kLargeFont * 1.8);
     }
   }
 }

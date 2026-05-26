@@ -42,6 +42,7 @@ class _ProgressViewState extends State<ProgressView> {
                   alignment: Alignment.topRight,
                   padding: const EdgeInsets.symmetric(
                     horizontal: kMediumPadding,
+                    vertical: kSmallPadding,
                   ),
                   decoration: BoxDecoration(
                     color: context.primary,
@@ -56,7 +57,7 @@ class _ProgressViewState extends State<ProgressView> {
                       Text(now, style: TextStyle(color: context.text)),
                       Text(
                         "${defsPers.toInt()}%",
-                        style: TextStyle(color: context.text),
+                        style: TextStyle(color: context.primary),
                       ),
                     ],
                   ),

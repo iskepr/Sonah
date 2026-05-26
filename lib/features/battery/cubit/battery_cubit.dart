@@ -25,10 +25,12 @@ class BatteryCubit extends Cubit<BatteryCubitState> {
   StreamSubscription<BatteryState>? _batteryStateSubscription;
 
   BatteryCubit({required this.tickerService}) : super(BatteryInitial()) {
-    _initBattery();
+    startListening();
   }
 
-  void _initBattery() async {
+  void startListening() async {
+    stopListening();
+
     await _updateBatteryInfo();
 
     _batteryStateSubscription = _battery.onBatteryStateChanged.listen(
@@ -38,6 +40,13 @@ class BatteryCubit extends Cubit<BatteryCubitState> {
     _tickerSubscription = tickerService.timeStream.listen((now) async {
       if (now.second == 0) await _updateBatteryInfo();
     });
+  }
+
+  void stopListening() {
+    _tickerSubscription?.cancel();
+    _batteryStateSubscription?.cancel();
+    _tickerSubscription = null;
+    _batteryStateSubscription = null;
   }
 
   Future<void> _updateBatteryInfo() async {
@@ -53,8 +62,7 @@ class BatteryCubit extends Cubit<BatteryCubitState> {
 
   @override
   Future<void> close() {
-    _tickerSubscription?.cancel();
-    _batteryStateSubscription?.cancel();
+    stopListening();
     return super.close();
   }
 }
