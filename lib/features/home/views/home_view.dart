@@ -14,6 +14,7 @@ import "../../battery/views/battery_view.dart";
 import "../../date_time/views/clock_view.dart";
 import "../../date_time/views/full_date_view.dart";
 import "../../date_time/views/progress_view.dart";
+import "../../search/views/search_view.dart";
 import "../../system_apps/cubit/system_apps_cubit.dart";
 import "../../system_apps/views/system_apps_view.dart";
 
@@ -64,10 +65,7 @@ class _HomeViewState extends State<HomeView> with WidgetsBindingObserver {
         if (details.primaryDelta! < 0) {
           showMyBottomSheet(
             context: context,
-            child: AppsListTile(
-              apps: context.read<SystemAppsCubit>().apps,
-              cubit: context.read<SystemAppsCubit>(),
-            ),
+            child: SearchView(cubit: context.read<SystemAppsCubit>()),
           );
         }
       },

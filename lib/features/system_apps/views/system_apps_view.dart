@@ -50,7 +50,9 @@ class AppsListTile extends StatelessWidget {
         final bool isHidden = app.isHidden;
 
         return ListTile(
-          contentPadding: const EdgeInsets.symmetric(vertical: kSmallPadding),
+          contentPadding: const EdgeInsets.symmetric(
+            vertical: kSmallPadding * 0.3,
+          ),
           leading: AppIcon(iconBytes: app.appInfo.iconBytes),
           title: Text(appName),
           onLongPress: () async {
