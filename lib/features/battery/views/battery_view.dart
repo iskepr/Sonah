@@ -40,9 +40,9 @@ class BatteryView extends StatelessWidget {
     );
   }
 
-  IconData _getBatteryIconData(BatteryState state, int level) {
+  IconData? _getBatteryIconData(BatteryState state, int level) {
     if (state == BatteryState.charging) return LucideIcons.batteryCharging;
-    if (state == BatteryState.full) return LucideIcons.batteryFull;
+    // if (state == BatteryState.full) return LucideIcons.batteryFull;
     if (state == BatteryState.connectedNotCharging) {
       return LucideIcons.batteryWarning;
     }
@@ -51,7 +51,6 @@ class BatteryView extends StatelessWidget {
     if (level < 10) return LucideIcons.batteryWarning;
     if (level < 20) return LucideIcons.batteryLow;
     if (level <= 50) return LucideIcons.batteryMedium;
-
-    return LucideIcons.batteryFull;
+    return null;
   }
 }

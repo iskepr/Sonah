@@ -37,6 +37,7 @@ const String kBoxSystemApps = "box_system_apps";
 const String kBoxSettings = "box_settings";
 
 // Globals
+const kAppLang = "ar";
 final S l10n = S.current;
 final GlobalKey<ScaffoldMessengerState> messengerKey =
     GlobalKey<ScaffoldMessengerState>();

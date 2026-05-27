@@ -10,6 +10,7 @@ import "core/theme/colors.dart";
 import "features/athan/cubit/athan_cubit.dart";
 import "features/battery/cubit/battery_cubit.dart";
 import "features/date_time/cubits/clock_cubit.dart";
+import "features/date_time/cubits/progress_cubit.dart";
 import "features/home/views/home_view.dart";
 import "features/system_apps/cubit/system_apps_cubit.dart";
 import "generated/l10n.dart";
@@ -38,7 +39,7 @@ class Sonah extends StatelessWidget {
           debugShowCheckedModeBanner: false,
 
           // لغة التطبيق
-          locale: const Locale("ar"),
+          locale: const Locale(kAppLang),
           localizationsDelegates: const [
             S.delegate,
             GlobalMaterialLocalizations.delegate,
@@ -65,6 +66,7 @@ class Sonah extends StatelessWidget {
                   ),
                 ),
                 BlocProvider(create: (context) => SystemAppsCubit()),
+                BlocProvider(create: (context) => ProgressCubit()),
               ],
               child: const Scaffold(
                 backgroundColor: Colors.transparent,

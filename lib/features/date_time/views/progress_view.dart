@@ -5,59 +5,54 @@ import "../../../constant.dart";
 import "../../../core/theme/colors.dart";
 import "../cubits/progress_cubit.dart";
 
-class ProgressView extends StatefulWidget {
+class ProgressView extends StatelessWidget {
   const ProgressView({super.key});
 
   @override
-  State<ProgressView> createState() => _ProgressViewState();
-}
-
-class _ProgressViewState extends State<ProgressView> {
-  @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => ProgressCubit()..getProg(),
-      child: BlocBuilder<ProgressCubit, ProgressState>(
-        builder: (context, state) {
-          double defsPers = 1;
-          String now = "";
-
-          if (state is ProgressLoaded) {
-            defsPers = state.pers.clamp(0, 100);
-            now = state.now;
-          }
-
+    return BlocBuilder<ProgressCubit, ProgressState>(
+      builder: (context, state) {
+        if (state is ProgressLoaded) {
+          final defsPers = state.pers.clamp(0, 100);
           return GestureDetector(
-            onTap: () {
-              context.read<ProgressCubit>().toggleMode();
-            },
+            onTap: () => context.read<ProgressCubit>().toggleMode(),
             child: Container(
               width: double.infinity,
-              decoration: BoxDecoration(color: context.secondary),
+              margin: const EdgeInsets.all(kMediumPadding),
+              decoration: BoxDecoration(
+                color: context.colorScheme.primaryContainer,
+                borderRadius: BorderRadius.circular(kCircleBorderRadius),
+              ),
               child: AnimatedFractionallySizedBox(
                 duration: kAnimationDuration,
                 widthFactor: defsPers / 100,
-                alignment: Alignment.topRight,
+                alignment: AlignmentDirectional.topStart,
                 child: Container(
-                  alignment: Alignment.topRight,
+                  alignment: AlignmentDirectional.topStart,
                   padding: const EdgeInsets.symmetric(
                     horizontal: kMediumPadding,
                     vertical: kSmallPadding,
                   ),
                   decoration: BoxDecoration(
                     color: context.primary,
-                    borderRadius: const BorderRadius.only(
-                      topLeft: Radius.circular(15),
-                      bottomLeft: Radius.circular(15),
-                    ),
+                    borderRadius: BorderRadius.circular(kCircleBorderRadius),
                   ),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text(now, style: TextStyle(color: context.text)),
+                      Text(
+                        state.now,
+                        style: TextStyle(
+                          color: context.colorScheme.primaryContainer,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
                       Text(
                         "${defsPers.toInt()}%",
-                        style: TextStyle(color: context.primary),
+                        style: TextStyle(
+                          color: context.colorScheme.primaryContainer,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
                     ],
                   ),
@@ -65,8 +60,9 @@ class _ProgressViewState extends State<ProgressView> {
               ),
             ),
           );
-        },
-      ),
+        }
+        return const SizedBox.shrink();
+      },
     );
   }
 }

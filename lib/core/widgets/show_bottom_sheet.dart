@@ -36,7 +36,7 @@ class _MyBottomSheetState extends State<MyBottomSheet> {
       maxChildSize: 0.95,
       builder: (_, controller) => MyMaterial(
         width: double.infinity,
-        theme: MyMaterialTheme.glass,
+        theme: MyMaterialTheme.solid,
         borderRadius: const BorderRadius.vertical(
           top: Radius.circular(kMediumBorderRadius),
         ),
@@ -151,8 +151,8 @@ Future<T?> showMyBottomSheet<T>({
     isScrollControlled: true,
     useSafeArea: true,
     sheetAnimationStyle: const AnimationStyle(
-      curve: kCurveEaseOutBack,
-      reverseCurve: kCurveEaseOutBack,
+      // curve: kCurveEaseOutBack,
+      // reverseCurve: kCurveEaseOutBack,
       duration: kAnimationDuration,
       reverseDuration: kAnimationDuration,
     ),

@@ -8,11 +8,11 @@ import "../../../constant.dart";
 import "../../../core/service/ticker_service.dart";
 import "../../../core/utils/platform_utils.dart";
 import "../../../core/widgets/show_bottom_sheet.dart";
-import "../../athan/views/next_athan_view.dart";
+import "../../athan/views/prayer_times_view.dart";
 import "../../battery/cubit/battery_cubit.dart";
 import "../../battery/views/battery_view.dart";
 import "../../date_time/views/clock_view.dart";
-import "../../date_time/views/hijri_date_view.dart";
+import "../../date_time/views/full_date_view.dart";
 import "../../date_time/views/progress_view.dart";
 import "../../system_apps/cubit/system_apps_cubit.dart";
 import "../../system_apps/views/system_apps_view.dart";
@@ -58,6 +58,7 @@ class _HomeViewState extends State<HomeView> with WidgetsBindingObserver {
   @override
   Widget build(BuildContext context) {
     final screenHeight = MediaQuery.of(context).size.height;
+    final screenWidth = MediaQuery.of(context).size.width;
     return GestureDetector(
       onVerticalDragUpdate: (details) {
         if (details.primaryDelta! < 0) {
@@ -77,7 +78,7 @@ class _HomeViewState extends State<HomeView> with WidgetsBindingObserver {
           children: [
             ListTile(
               leading: const Icon(LucideIcons.settings),
-              title: const Text("تعين كا افتراضي"),
+              title: const Text("تعين كمشغل افتراضي"),
               onTap: () async {
                 if (PlatformUtils.isAndroid) {
                   const intent = AndroidIntent(
@@ -100,29 +101,24 @@ class _HomeViewState extends State<HomeView> with WidgetsBindingObserver {
               children: [
                 const ProgressView(),
                 SizedBox(height: screenHeight * 0.15),
-                const FractionallySizedBox(
-                  widthFactor: 0.7,
-                  child: Column(
-                    spacing: kMediumPadding,
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.1),
+                  child: const Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
+                      ClockView(),
                       Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              ClockView(),
-                              HijriDateView(),
-                              NextAthanView(),
-                            ],
-                          ),
-                          BatteryView(),
-                        ],
+                        spacing: kMediumPadding,
+                        children: [FullDateView(), BatteryView()],
                       ),
-                      AppsListView(),
                     ],
                   ),
+                ),
+                const PrayerTimesView(),
+
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.1),
+                  child: const AppsListView(),
                 ),
               ],
             ),

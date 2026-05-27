@@ -21,13 +21,13 @@ class ProgressLoaded extends ProgressState {
 }
 
 class ProgressCubit extends Cubit<ProgressState> {
-  ProgressCubit() : super(ProgressInitial());
+  ProgressCubit() : super(ProgressInitial()) {
+    getProgByMode(currentMode);
+  }
 
   DateTime get now => DateTime.now();
 
   ProgressMode currentMode = ProgressMode.day;
-
-  void getProg() => getProgByMode(currentMode);
 
   void toggleMode() {
     const modes = ProgressMode.values;

@@ -3,11 +3,12 @@ import "package:adhan/adhan.dart";
 import "package:flutter/material.dart";
 import "package:flutter_bloc/flutter_bloc.dart";
 
+import "../../../constant.dart";
 import "../../../core/extensions/extensions.dart";
+import "../../../core/helpers/hive_helper.dart";
 import "../../../core/service/ticker_service.dart";
 import "../../../core/utils/get_location.dart";
 import "../../../core/utils/show_message.dart";
-import "../extensions/athan_extenstion.dart";
 
 class AthanState {}
 
@@ -17,12 +18,12 @@ class AthanLoading extends AthanState {}
 
 class AthanLoaded extends AthanState {
   final PrayerTimes prayerTimes;
-  final String nextPrayerName;
+  final Prayer nextPrayer;
   final String remainingTime;
 
   AthanLoaded({
     required this.prayerTimes,
-    required this.nextPrayerName,
+    required this.nextPrayer,
     required this.remainingTime,
   });
 }
@@ -37,18 +38,33 @@ class AthanCubit extends Cubit<AthanState> {
 
   AthanCubit({required this.tickerService}) : super(AthanInitial()) {
     _startCentralTimer();
-
+    getLocation();
     WidgetsBinding.instance.addPostFrameCallback((_) => getAthanTimes());
+  }
+
+  Future<Map<String, dynamic>?> getLocation() async {
+    final location = await getCurrentLocation();
+    if (location == null) return null;
+    await HiveHelper.saveTDataByKey(
+      kBoxSettings,
+      "location",
+      location.toJson(),
+    );
+    return location.toJson();
   }
 
   void getAthanTimes() async {
     if (isClosed) return;
     try {
       safeEmit(AthanLoading());
-      final location = await getCurrentLocation();
-      if (location == null || isClosed) return;
 
-      _coordinates = Coordinates(location.latitude, location.longitude);
+      final cachedLocation = HiveHelper.getTDataByKey(kBoxSettings, "location");
+      if (cachedLocation == null) return;
+      _coordinates = Coordinates(
+        cachedLocation["latitude"],
+        cachedLocation["longitude"],
+      );
+
       _params = CalculationMethod.karachi.getParameters();
       _params!.madhab = Madhab.hanafi;
 
@@ -77,8 +93,7 @@ class AthanCubit extends Cubit<AthanState> {
     Prayer next = _todayPrayers!.nextPrayer();
     DateTime? targetTime = _todayPrayers!.timeForPrayer(next);
 
-    if (next == Prayer.none ||
-        (next == Prayer.isha && now.isAfter(_todayPrayers!.isha))) {
+    if (next == Prayer.none) {
       final tomorrow = now.add(const Duration(days: 1));
       final tomorrowPrayers = PrayerTimes(
         _coordinates!,
@@ -95,7 +110,7 @@ class AthanCubit extends Cubit<AthanState> {
     safeEmit(
       AthanLoaded(
         prayerTimes: _todayPrayers!,
-        nextPrayerName: next.prayerName,
+        nextPrayer: next,
         remainingTime: countdownStr,
       ),
     );
