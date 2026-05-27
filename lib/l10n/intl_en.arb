@@ -13,6 +13,8 @@
     "appSize": "App Size",
     "appIcon": "App Icon",
     "favorite": "Favorite",
+    "hideApp": "Hide App",
+    "showApp": "Show App",
     "to": "to",
     "from": "from",
     "year": "Year",

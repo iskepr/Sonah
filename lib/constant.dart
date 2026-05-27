@@ -32,6 +32,10 @@ const Duration kAnimationSlowerDuration = Duration(milliseconds: 500);
 const Curve kCurveEaseInOut = Curves.easeInOut;
 const Curve kCurveEaseOutBack = Curves.easeOutBack;
 
+// Hive Boxes
+const String kBoxSystemApps = "box_system_apps";
+const String kBoxSettings = "box_settings";
+
 // Globals
 final S l10n = S.current;
 final GlobalKey<ScaffoldMessengerState> messengerKey =

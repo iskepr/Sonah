@@ -4,16 +4,20 @@ import "package:flutter_bloc/flutter_bloc.dart";
 import "package:flutter_localizations/flutter_localizations.dart";
 
 import "constant.dart";
+import "core/helpers/hive_helper.dart";
 import "core/service/ticker_service.dart";
 import "core/theme/colors.dart";
 import "features/athan/cubit/athan_cubit.dart";
 import "features/battery/cubit/battery_cubit.dart";
 import "features/date_time/cubits/clock_cubit.dart";
 import "features/home/views/home_view.dart";
+import "features/system_apps/cubit/system_apps_cubit.dart";
 import "generated/l10n.dart";
 
-void main() {
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await HiveHelper.init();
+
   runApp(const Sonah());
 }
 
@@ -60,8 +64,12 @@ class Sonah extends StatelessWidget {
                     tickerService: context.read<TickerService>(),
                   ),
                 ),
+                BlocProvider(create: (context) => SystemAppsCubit()),
               ],
-              child: const Scaffold(body: HomeView()),
+              child: const Scaffold(
+                backgroundColor: Colors.transparent,
+                body: HomeView(),
+              ),
             ),
           ),
 

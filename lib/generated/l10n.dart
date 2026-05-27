@@ -124,6 +124,16 @@ class S {
     return Intl.message('Favorite', name: 'favorite', desc: '', args: []);
   }
 
+  /// `Hide App`
+  String get hideApp {
+    return Intl.message('Hide App', name: 'hideApp', desc: '', args: []);
+  }
+
+  /// `Show App`
+  String get showApp {
+    return Intl.message('Show App', name: 'showApp', desc: '', args: []);
+  }
+
   /// `to`
   String get to {
     return Intl.message('to', name: 'to', desc: '', args: []);

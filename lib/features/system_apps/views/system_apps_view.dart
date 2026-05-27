@@ -9,30 +9,31 @@ import "../../../constant.dart";
 import "../../../core/extensions/extensions.dart";
 import "../../../core/widgets/show_bottom_sheet.dart";
 import "../cubit/system_apps_cubit.dart";
+import "../models/application_model.dart";
 
 class AppsListView extends StatelessWidget {
   const AppsListView({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => SystemAppsCubit()..getApps(),
-      child: BlocBuilder<SystemAppsCubit, SystemAppsState>(
-        builder: (context, state) {
-          if (state is! SystemAppsLoaded) {
-            return const Center(child: CircularProgressIndicator());
-          }
-          final apps = state.apps;
-          return AppsListTile(apps: apps);
-        },
-      ),
+    return BlocBuilder<SystemAppsCubit, SystemAppsState>(
+      builder: (context, state) {
+        if (state is! SystemAppsLoaded) {
+          return const Center(child: CircularProgressIndicator());
+        }
+        final apps = state.apps
+            .where((app) => app.isFavorite && !app.isHidden)
+            .toList();
+        return AppsListTile(apps: apps, cubit: context.read<SystemAppsCubit>());
+      },
     );
   }
 }
 
 class AppsListTile extends StatelessWidget {
-  const AppsListTile({super.key, required this.apps});
-  final List<AppInfo> apps;
+  const AppsListTile({super.key, required this.apps, required this.cubit});
+  final List<ApplicationModel> apps;
+  final SystemAppsCubit cubit;
 
   @override
   Widget build(BuildContext context) {
@@ -42,14 +43,15 @@ class AppsListTile extends StatelessWidget {
 
       itemCount: apps.length,
       itemBuilder: (context, index) {
-        final AppInfo app = apps[index];
-        final appName = app.appName ?? "";
-        final String packageName = app.packageName ?? "";
-        final bool isFavorite = index % 2 == 0;
+        final ApplicationModel app = apps[index];
+        final appName = app.appInfo.appName ?? "";
+        final String packageName = app.appInfo.packageName ?? "";
+        final bool isFavorite = app.isFavorite;
+        final bool isHidden = app.isHidden;
 
         return ListTile(
           contentPadding: const EdgeInsets.symmetric(vertical: kSmallPadding),
-          leading: AppIcon(iconBytes: app.iconBytes),
+          leading: AppIcon(iconBytes: app.appInfo.iconBytes),
           title: Text(appName),
           onLongPress: () async {
             showMyBottomSheet(
@@ -59,7 +61,7 @@ class AppsListTile extends StatelessWidget {
                 children: [
                   ListTile(
                     title: Text(appName),
-                    leading: AppIcon(iconBytes: app.iconBytes),
+                    leading: AppIcon(iconBytes: app.appInfo.iconBytes),
                     subtitle: const Text("3 ساعات"),
                     trailing: const Icon(LucideIcons.circleAlert),
                     onTap: () async =>
@@ -72,14 +74,30 @@ class AppsListTile extends StatelessWidget {
                     leading: Icon(
                       isFavorite ? LucideIcons.starOff : LucideIcons.star,
                     ),
+                    onTap: () async {
+                      await cubit.toggleFavorite(packageName, !isFavorite);
+                      if (context.mounted) context.close();
+                    },
                   ),
                   ListTile(
                     title: Text(l10n.edit),
                     leading: const Icon(LucideIcons.edit),
-                    onTap: () async =>
-                        await FlutterDeviceApps.uninstallApp(packageName),
+                    onTap: () async {
+                      await cubit.toggleHidden(packageName, !isHidden);
+                      if (context.mounted) context.close();
+                    },
                   ),
-                  if (!(app.isSystem ?? false))
+                  ListTile(
+                    title: Text(isHidden ? l10n.showApp : l10n.hideApp),
+                    leading: Icon(
+                      isHidden ? LucideIcons.eyeClosed : LucideIcons.eye,
+                    ),
+                    onTap: () async {
+                      await cubit.toggleHidden(packageName, !isHidden);
+                      if (context.mounted) context.close();
+                    },
+                  ),
+                  if (!(app.appInfo.isSystem ?? false))
                     ListTile(
                       title: Text(l10n.unInstall),
                       leading: const Icon(LucideIcons.trash2),
