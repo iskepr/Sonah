@@ -25,7 +25,7 @@ class ProgressView extends StatelessWidget {
               ),
               child: AnimatedFractionallySizedBox(
                 duration: kAnimationDuration,
-                widthFactor: defsPers / 100,
+                widthFactor: (defsPers / 100).clamp(0.3, 1),
                 alignment: AlignmentDirectional.topStart,
                 child: Container(
                   alignment: AlignmentDirectional.topStart,

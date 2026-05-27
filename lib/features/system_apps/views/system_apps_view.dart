@@ -31,8 +31,14 @@ class AppsListView extends StatelessWidget {
 }
 
 class AppsListTile extends StatelessWidget {
-  const AppsListTile({super.key, required this.apps, required this.cubit});
+  const AppsListTile({
+    super.key,
+    required this.apps,
+    this.maxCount,
+    required this.cubit,
+  });
   final List<ApplicationModel> apps;
+  final int? maxCount;
   final SystemAppsCubit cubit;
 
   @override
@@ -41,7 +47,7 @@ class AppsListTile extends StatelessWidget {
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
 
-      itemCount: apps.length,
+      itemCount: apps.length.clamp(0, maxCount ?? apps.length),
       itemBuilder: (context, index) {
         final ApplicationModel app = apps[index];
         final appName = app.appInfo.appName ?? "";

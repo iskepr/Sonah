@@ -4,9 +4,10 @@ import "package:flutter_bloc/flutter_bloc.dart";
 export "date_time_extensions.dart";
 export "string_extensions.dart";
 
-extension StringExtension on String {
+extension StringExtension on String? {
   String get removeEl {
-    return replaceFirst("ال", "");
+    if (this == null) return "";
+    return this!.replaceFirst("ال", "");
   }
 
   // String get addEl {
@@ -16,13 +17,18 @@ extension StringExtension on String {
   //     return this;
   //   }
   // }
+
+  String get toSearch {
+    if (this == null) return "";
+    return this!.toLowerCase().trim();
+  }
 }
 
 extension NavigationHelpers on BuildContext {
-  void close() {
+  void close<T>([T? result]) {
     if (!mounted) return;
     // if (canPop()) {
-    Navigator.of(this).pop();
+    Navigator.of(this).pop(result);
     // } else {
     // go(kRouteHome);
     // }

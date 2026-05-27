@@ -1,3 +1,5 @@
+import "dart:async";
+
 import "package:flutter/material.dart";
 
 import "../../constant.dart";
@@ -5,7 +7,7 @@ import "../extensions/extensions.dart";
 import "../theme/colors.dart";
 import "../theme/material.dart";
 
-void showCustomDialog({
+Future<T?> showCustomDialog<T>({
   required String title,
   String? subtitle,
   void Function()? onConfirm,
@@ -13,9 +15,10 @@ void showCustomDialog({
   bool closeOnConfirm = true,
   Widget? child,
   bool easyClose = true,
-}) {
-  void buildDialog(BuildContext ctx) {
-    showGeneralDialog(
+}) async {
+  // 1. تعريف الدالة الداخلية بنضافة كـ Local Function
+  Future<T?> buildDialog(BuildContext ctx) async {
+    final result = await showGeneralDialog<T>(
       context: ctx,
       barrierDismissible: easyClose,
       barrierLabel: title,
@@ -36,19 +39,35 @@ void showCustomDialog({
           child: FadeTransition(opacity: animation, child: child),
         );
       },
-    ).then((_) {
-      if (onDismiss != null) onDismiss();
-    });
+    );
+
+    // نداء الـ onDismiss بأمان بعد ما الدالوج يقفل تماماً
+    if (onDismiss != null) onDismiss();
+
+    return result; // بنرجع النتيجة الحقيقية (T) اللي جاية من الدالوج
   }
 
+  // 2. تصفية السياق (Context) والـ Return النهائي
   final context = kNavigatorKey.currentContext;
+
   if (context != null) {
-    buildDialog(context);
+    return await buildDialog(context);
   } else {
-    WidgetsBinding.instance.addPostFrameCallback((_) {
+    // لو الـ context مش جاهز (زي لحظة الـ الميكانيزم الأوتوماتيكي على ما الشاشة تترسم)
+    // بنستخدم Completer عشان نقدر نعمل return لـ Future صحيحة للمكان اللي نادى الدالة
+    final completer = Completer<T?>();
+
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
       final postFrameContext = kNavigatorKey.currentContext;
-      if (postFrameContext != null) buildDialog(postFrameContext);
+      if (postFrameContext != null) {
+        final res = await buildDialog(postFrameContext);
+        completer.complete(res);
+      } else {
+        completer.complete(null);
+      }
     });
+
+    return completer.future;
   }
 }
 

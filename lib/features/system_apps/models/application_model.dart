@@ -1,37 +1,42 @@
-// inside application_model.dart
-
 import "package:flutter_device_apps/flutter_device_apps.dart";
 
 class ApplicationModel {
   final AppInfo appInfo;
   final bool isFavorite;
   final bool isHidden;
+  final int openCount;
+  final DateTime? lastOpenTime;
 
   ApplicationModel({
     required this.appInfo,
     this.isFavorite = false,
     this.isHidden = false,
+    this.openCount = 0,
+    this.lastOpenTime,
   });
 
-  // تحويل الموديل لـ Map عشان يخزن في Hive
   Map<String, dynamic> toMap() {
     return {
       "isFavorite": isFavorite,
       "isHidden": isHidden,
+      "openCount": openCount,
+      "lastOpenTime": lastOpenTime?.millisecondsSinceEpoch,
       "appInfo": _appInfoToMap(appInfo),
     };
   }
 
-  // القراءة من الـ Map اللي راجع من Hive
   factory ApplicationModel.fromMap(Map<String, dynamic> map) {
     return ApplicationModel(
       isFavorite: map["isFavorite"] ?? false,
       isHidden: map["isHidden"] ?? false,
+      openCount: map["openCount"] ?? 0,
+      lastOpenTime: map["lastOpenTime"] != null
+          ? DateTime.fromMillisecondsSinceEpoch(map["lastOpenTime"])
+          : null,
       appInfo: AppInfo.fromMap(Map<String, Object?>.from(map["appInfo"] ?? {})),
     );
   }
 
-  // دالة مساعدة لأن باكدج flutter_device_apps مش بتوفر toMap للـ AppInfo
   Map<String, dynamic> _appInfoToMap(AppInfo info) {
     return {
       "packageName": info.packageName,
@@ -60,11 +65,15 @@ class ApplicationModel {
     AppInfo? appInfo,
     bool? isFavorite,
     bool? isHidden,
+    int? openCount,
+    DateTime? lastOpenTime,
   }) {
     return ApplicationModel(
       appInfo: appInfo ?? this.appInfo,
       isFavorite: isFavorite ?? this.isFavorite,
       isHidden: isHidden ?? this.isHidden,
+      openCount: openCount ?? this.openCount,
+      lastOpenTime: lastOpenTime ?? this.lastOpenTime,
     );
   }
 }
