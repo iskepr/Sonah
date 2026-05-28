@@ -27,7 +27,7 @@ class _FullDateViewState extends State<FullDateView> {
       child: Row(
         children: [
           Text(
-            "${today.dayWeName}, ",
+            "${today.dayWeName}، ",
             style: const TextStyle(
               fontSize: kMediumFont,
               fontWeight: FontWeight.bold,

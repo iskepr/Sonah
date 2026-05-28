@@ -15,9 +15,9 @@ class ProgressState {}
 class ProgressInitial extends ProgressState {}
 
 class ProgressLoaded extends ProgressState {
-  final String now;
+  final String title;
   final double pers;
-  ProgressLoaded(this.now, this.pers);
+  ProgressLoaded(this.title, this.pers);
 }
 
 class ProgressCubit extends Cubit<ProgressState> {

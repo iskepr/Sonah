@@ -133,7 +133,9 @@ class _SinglePrayerViewState extends State<SinglePrayerView> {
     return GestureDetector(
       onLongPress: () => setState(() => isExpanded = !isExpanded),
       child: Container(
-        margin: widget.isHidden || widget.isRemainingView
+        margin: !widget.isNextPrayer && widget.isRemainingView
+            ? EdgeInsets.zero
+            : widget.isHidden || widget.isRemainingView
             ? EdgeInsetsDirectional.only(start: screenWidth * 0.1)
             : const EdgeInsets.symmetric(
                 horizontal: kSmallPadding / 1.5,

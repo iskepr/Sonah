@@ -45,6 +45,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "month": MessageLookupByLibrary.simpleMessage("شهر"),
     "prayerTimes": MessageLookupByLibrary.simpleMessage("مواعيد الصلاة"),
     "remove": MessageLookupByLibrary.simpleMessage("حذف"),
+    "share": MessageLookupByLibrary.simpleMessage("مشاركة"),
     "showApp": MessageLookupByLibrary.simpleMessage("إظهار التطبيق"),
     "sunrise": MessageLookupByLibrary.simpleMessage("الشروق"),
     "to": MessageLookupByLibrary.simpleMessage("إلى"),

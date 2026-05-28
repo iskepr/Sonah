@@ -13,9 +13,8 @@ import "../../battery/cubit/battery_cubit.dart";
 import "../../battery/views/battery_view.dart";
 import "../../date_time/views/clock_view.dart";
 import "../../date_time/views/full_date_view.dart";
-import "../../date_time/views/progress_view.dart";
+import "../../top_bar/views/top_bar_view.dart";
 import "../../search/views/search_view.dart";
-import "../../system_apps/cubit/system_apps_cubit.dart";
 import "../../system_apps/views/system_apps_view.dart";
 
 class HomeView extends StatefulWidget {
@@ -56,19 +55,15 @@ class _HomeViewState extends State<HomeView> with WidgetsBindingObserver {
     }
   }
 
+  bool isSearchMode = false;
+
   @override
   Widget build(BuildContext context) {
     final screenHeight = MediaQuery.of(context).size.height;
     final screenWidth = MediaQuery.of(context).size.width;
+    final defaultPadding = screenWidth * 0.1;
+
     return GestureDetector(
-      onVerticalDragUpdate: (details) {
-        if (details.primaryDelta! < 0) {
-          showMyBottomSheet(
-            context: context,
-            child: SearchView(cubit: context.read<SystemAppsCubit>()),
-          );
-        }
-      },
       onLongPress: () => showMyBottomSheet(
         context: context,
         child: Column(
@@ -89,34 +84,87 @@ class _HomeViewState extends State<HomeView> with WidgetsBindingObserver {
           ],
         ),
       ),
-      child: Container(
-        decoration: const BoxDecoration(),
+      child: NotificationListener<ScrollNotification>(
+        onNotification: (ScrollNotification notification) {
+          if (notification is ScrollEndNotification &&
+              notification.dragDetails != null &&
+              notification.dragDetails!.primaryVelocity! < -300) {
+            if (!isSearchMode) setState(() => isSearchMode = true);
+          } else if (notification is ScrollEndNotification &&
+              notification.dragDetails != null &&
+              notification.dragDetails!.primaryVelocity! > 300) {
+            if (isSearchMode) setState(() => isSearchMode = false);
+          }
+          return false;
+        },
         child: SingleChildScrollView(
+          physics: const AlwaysScrollableScrollPhysics(),
           child: ConstrainedBox(
             constraints: BoxConstraints(minHeight: screenHeight),
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                const ProgressView(),
-                SizedBox(height: screenHeight * 0.15),
-                Padding(
-                  padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.1),
-                  child: const Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+                AnimatedSize(
+                  duration: kAnimationDuration,
+                  child: isSearchMode
+                      ? SizedBox(height: screenHeight * 0.11)
+                      : const SizedBox.shrink(),
+                ),
+                TopBarView(isSearchMode: isSearchMode),
+
+                AnimatedOpacity(
+                  duration: kAnimationDuration,
+                  curve: kCurveEaseInOut,
+                  opacity: isSearchMode ? 1 : 0,
+                  child: AnimatedSize(
+                    duration: kAnimationDuration,
+                    curve: kCurveEaseInOut,
+                    child: isSearchMode
+                        ? Padding(
+                            padding: EdgeInsets.symmetric(
+                              horizontal: defaultPadding,
+                            ),
+                            child: const SearchView(),
+                          )
+                        : const SizedBox(height: 0, width: double.infinity),
+                  ),
+                ),
+
+                AnimatedSize(
+                  duration: kAnimationDuration,
+                  child: !isSearchMode
+                      ? SizedBox(height: screenHeight * 0.15)
+                      : const SizedBox.shrink(),
+                ),
+                AnimatedOpacity(
+                  duration: kAnimationDuration,
+                  opacity: isSearchMode ? 0 : 1,
+                  child: Column(
                     children: [
-                      ClockView(),
-                      Row(
-                        spacing: kMediumPadding,
-                        children: [FullDateView(), BatteryView()],
+                      Padding(
+                        padding: EdgeInsets.symmetric(
+                          horizontal: defaultPadding,
+                        ),
+                        child: const Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            ClockView(),
+                            Row(
+                              spacing: kMediumPadding,
+                              children: [FullDateView(), BatteryView()],
+                            ),
+                          ],
+                        ),
+                      ),
+                      const PrayerTimesView(),
+                      Padding(
+                        padding: EdgeInsets.symmetric(
+                          horizontal: defaultPadding,
+                        ),
+                        child: const AppsListView(),
                       ),
                     ],
                   ),
-                ),
-                const PrayerTimesView(),
-
-                Padding(
-                  padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.1),
-                  child: const AppsListView(),
                 ),
               ],
             ),

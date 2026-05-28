@@ -68,7 +68,10 @@ class AppsListTile extends StatelessWidget {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   ListTile(
-                    title: Text(appName),
+                    title: Text(
+                      appName,
+                      style: const TextStyle(fontWeight: FontWeight.bold),
+                    ),
                     leading: AppIcon(iconBytes: app.appInfo.iconBytes),
                     subtitle: const Text("3 ساعات"),
                     trailing: const Icon(LucideIcons.circleAlert),
@@ -94,6 +97,11 @@ class AppsListTile extends StatelessWidget {
                       await cubit.toggleHidden(packageName, !isHidden);
                       if (context.mounted) context.close();
                     },
+                  ),
+                  ListTile(
+                    title: Text(l10n.share),
+                    leading: const Icon(LucideIcons.share2),
+                    onTap: () async {},
                   ),
                   ListTile(
                     title: Text(isHidden ? l10n.showApp : l10n.hideApp),

@@ -44,35 +44,16 @@ Future<void> startCall(Contact contact, {required BuildContext context}) async {
   if (!status.isGranted) status = await Permission.phone.request();
 
   if (status.isGranted) {
-    final int? selectedSimSlot = await showCustomDialog<int>(
-      title: "اختر خط الاتصال",
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          ListTile(
-            leading: const Icon(Icons.sim_card),
-            title: const Text("الخط الأول"),
-            onTap: () => context.close(0),
-          ),
-          ListTile(
-            leading: const Icon(Icons.sim_card),
-            title: const Text("الخط الثاني"),
-            onTap: () => context.close(1),
-          ),
-        ],
-      ),
-    );
-
     final cleanNumber = selectedNumber.replaceAll(" ", "");
 
     final intent = AndroidIntent(
       action: "android.intent.action.CALL",
       data: "tel:$cleanNumber",
-      arguments: {
-        "com.android.phone.extra.slot": selectedSimSlot,
-        "phone": selectedSimSlot,
-        "simSlot": selectedSimSlot,
-      },
+      // arguments: {
+      //   "com.android.phone.extra.slot": selectedSimSlot,
+      //   "phone": selectedSimSlot,
+      //   "simSlot": selectedSimSlot,
+      // },
     );
 
     try {

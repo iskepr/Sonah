@@ -68,7 +68,7 @@ class MyMaterial extends StatelessWidget {
       decoration: decoration,
       child: AnimatedSize(
         duration: kAnimationDuration,
-        curve: Curves.easeInOut,
+        curve: kCurveEaseInOut,
         child: child,
       ),
     );

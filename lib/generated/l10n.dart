@@ -134,6 +134,11 @@ class S {
     return Intl.message('Show App', name: 'showApp', desc: '', args: []);
   }
 
+  /// `Share`
+  String get share {
+    return Intl.message('Share', name: 'share', desc: '', args: []);
+  }
+
   /// `to`
   String get to {
     return Intl.message('to', name: 'to', desc: '', args: []);
