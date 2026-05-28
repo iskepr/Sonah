@@ -4,9 +4,11 @@ import "package:flutter/material.dart";
 import "package:flutter_bloc/flutter_bloc.dart";
 import "package:flutter_device_apps/flutter_device_apps.dart";
 import "package:lucide_icons_flutter/lucide_icons.dart";
+import "package:share_plus/share_plus.dart";
 
 import "../../../constant.dart";
 import "../../../core/extensions/extensions.dart";
+import "../../../core/utils/show_message.dart";
 import "../../../core/widgets/show_bottom_sheet.dart";
 import "../cubit/system_apps_cubit.dart";
 import "../models/application_model.dart";
@@ -73,7 +75,7 @@ class AppsListTile extends StatelessWidget {
                       style: const TextStyle(fontWeight: FontWeight.bold),
                     ),
                     leading: AppIcon(iconBytes: app.appInfo.iconBytes),
-                    subtitle: const Text("3 ساعات"),
+                    subtitle: Text("3 ساعات $packageName"),
                     trailing: const Icon(LucideIcons.circleAlert),
                     onTap: () async =>
                         await FlutterDeviceApps.openAppSettings(packageName),
@@ -101,7 +103,31 @@ class AppsListTile extends StatelessWidget {
                   ListTile(
                     title: Text(l10n.share),
                     leading: const Icon(LucideIcons.share2),
-                    onTap: () async {},
+                    onTap: () async {
+                      final String? apkPath = app.appInfo.apkPath;
+
+                      if (apkPath != null && apkPath.isNotEmpty) {
+                        if (context.mounted) context.close();
+
+                        try {
+                          await Share.shareXFiles(
+                            [XFile(apkPath)],
+                            text: "مشاركة ملف APK لتطبيق $appName",
+                            subject: "ملف $appName.apk",
+                          );
+                        } catch (e) {
+                          showMessage(
+                            "لا يمكن مشاركة ملف الـ APK لهذا التطبيق",
+                            isError: true,
+                          );
+                        }
+                      } else {
+                        showMessage(
+                          "لا يمكن الوصول لملف الـ APK لهذا التطبيق",
+                          isError: true,
+                        );
+                      }
+                    },
                   ),
                   ListTile(
                     title: Text(isHidden ? l10n.showApp : l10n.hideApp),

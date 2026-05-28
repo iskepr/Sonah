@@ -129,6 +129,19 @@ class SearchCubit extends Cubit<SearchState> {
       return app.appInfo.appName.toSearch.contains(query);
     }).toList();
 
+    filteredApps.sort((a, b) {
+      final appNameA = a.appInfo.appName.toSearch;
+      final appNameB = b.appInfo.appName.toSearch;
+
+      final aStartsWith = appNameA.startsWith(query);
+      final bStartsWith = appNameB.startsWith(query);
+
+      if (aStartsWith && !bStartsWith) return -1;
+      if (!aStartsWith && bStartsWith) return 1;
+
+      return b.openCount.compareTo(a.openCount);
+    });
+
     final filteredContacts = state.allContacts.where((Contact contact) {
       if (contact.displayName.toSearch.contains(query)) return true;
 
@@ -154,6 +167,10 @@ class SearchCubit extends Cubit<SearchState> {
       if (contact.addresses.any(
         (addr) => addr.formatted.toSearch.contains(query),
       )) {
+        return true;
+      }
+
+      if (contact.notes.any((phone) => phone.note.toSearch.contains(query))) {
         return true;
       }
 

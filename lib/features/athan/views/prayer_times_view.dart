@@ -136,7 +136,7 @@ class _SinglePrayerViewState extends State<SinglePrayerView> {
         margin: !widget.isNextPrayer && widget.isRemainingView
             ? EdgeInsets.zero
             : widget.isHidden || widget.isRemainingView
-            ? EdgeInsetsDirectional.only(start: screenWidth * 0.1)
+            ? EdgeInsetsDirectional.only(start: screenWidth * 0.13)
             : const EdgeInsets.symmetric(
                 horizontal: kSmallPadding / 1.5,
                 vertical: kSmallPadding,

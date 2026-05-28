@@ -1,9 +1,11 @@
+import "package:android_intent_plus/android_intent.dart";
 import "package:flutter/material.dart";
 import "package:flutter_contacts/models/contact/contact.dart";
 import "package:lucide_icons_flutter/lucide_icons.dart";
 
 import "../../../../constant.dart";
 import "../../../../core/theme/colors.dart";
+import "../../../../core/utils/platform_utils.dart";
 import "../../service/start_call_service.dart";
 
 class ContactsListView extends StatelessWidget {
@@ -41,6 +43,14 @@ class ContactsListView extends StatelessWidget {
                 .join(" ,"),
           ),
           onTap: () async => await startCall(contact, context: context),
+          onLongPress: () async {
+            if (PlatformUtils.isAndroid) {
+              await AndroidIntent(
+                action: "android.intent.action.VIEW",
+                data: "content://contacts/people/${contact.id}",
+              ).launch();
+            }
+          },
         );
       },
     );
