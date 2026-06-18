@@ -36,6 +36,10 @@ const Curve kCurveEaseOutBack = Curves.easeOutBack;
 const String kBoxSystemApps = "box_system_apps";
 const String kBoxSettings = "box_settings";
 
+// Routers
+const String kRouteHome = "/";
+const String kRouteRoutine = "/routine";
+
 // Globals
 const kAppLang = "ar";
 final S l10n = S.current;

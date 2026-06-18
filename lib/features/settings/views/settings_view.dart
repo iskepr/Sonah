@@ -1,7 +1,9 @@
 import "package:android_intent_plus/android_intent.dart";
 import "package:flutter/material.dart";
+import "package:go_router/go_router.dart";
 import "package:lucide_icons_flutter/lucide_icons.dart";
 
+import "../../../constant.dart";
 import "../../../core/utils/platform_utils.dart";
 
 class SettingsView extends StatelessWidget {
@@ -22,6 +24,13 @@ class SettingsView extends StatelessWidget {
               );
               await intent.launch();
             }
+          },
+        ),
+        ListTile(
+          leading: const Icon(LucideIcons.settings),
+          title: const Text("تعديل الروتين اليومي"),
+          onTap: () async {
+            context.go(kRouteRoutine);
           },
         ),
       ],
