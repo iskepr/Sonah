@@ -29,6 +29,18 @@ class MessageLookup extends MessageLookupByLibrary {
     "appSize": MessageLookupByLibrary.simpleMessage("App Size"),
     "appVersion": MessageLookupByLibrary.simpleMessage("App Version"),
     "asr": MessageLookupByLibrary.simpleMessage("Asr"),
+    "azkar": MessageLookupByLibrary.simpleMessage("Azkar"),
+    "azkarAfterPrayer": MessageLookupByLibrary.simpleMessage(
+      "Adhkar after prayer",
+    ),
+    "azkarAfterWake": MessageLookupByLibrary.simpleMessage(
+      "Adhkar after wakeUp",
+    ),
+    "azkarBeforeSleep": MessageLookupByLibrary.simpleMessage(
+      "Adhkar before sleep",
+    ),
+    "azkarEvening": MessageLookupByLibrary.simpleMessage("Evening Adhkar"),
+    "azkarMorning": MessageLookupByLibrary.simpleMessage("Morning Adhkar"),
     "cancel": MessageLookupByLibrary.simpleMessage("Cancel"),
     "close": MessageLookupByLibrary.simpleMessage("Close"),
     "confirm": MessageLookupByLibrary.simpleMessage("Confirm"),

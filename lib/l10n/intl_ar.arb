@@ -29,5 +29,11 @@
     "dhuhr": "الظهر",
     "asr": "العصر",
     "maghrib": "المغرب",
-    "isha": "العشاء"
+    "isha": "العشاء",
+    "azkar": "الأذكار",
+    "azkarMorning":"أذكار الصباح",
+    "azkarEvening":"أذكار المساء",
+    "azkarAfterPrayer":"أذكار بعد الصلاة",
+    "azkarBeforeSleep":"أذكار قبل النوم",
+    "azkarAfterWake":"أذكار بعد الاستيقاظ"
 }

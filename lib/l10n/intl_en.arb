@@ -29,5 +29,11 @@
     "dhuhr": "Dhuhr",
     "asr": "Asr",
     "maghrib": "Maghrib",
-    "isha": "Isha"
+    "isha": "Isha",
+        "azkar": "Azkar",
+    "azkarMorning":"Morning Adhkar",
+    "azkarEvening":"Evening Adhkar",
+    "azkarAfterPrayer":"Adhkar after prayer",
+    "azkarBeforeSleep":"Adhkar before sleep",
+    "azkarAfterWake":"Adhkar after wakeUp"
 }

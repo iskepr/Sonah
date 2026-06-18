@@ -213,6 +213,61 @@ class S {
   String get isha {
     return Intl.message('Isha', name: 'isha', desc: '', args: []);
   }
+
+  /// `Azkar`
+  String get azkar {
+    return Intl.message('Azkar', name: 'azkar', desc: '', args: []);
+  }
+
+  /// `Morning Adhkar`
+  String get azkarMorning {
+    return Intl.message(
+      'Morning Adhkar',
+      name: 'azkarMorning',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Evening Adhkar`
+  String get azkarEvening {
+    return Intl.message(
+      'Evening Adhkar',
+      name: 'azkarEvening',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Adhkar after prayer`
+  String get azkarAfterPrayer {
+    return Intl.message(
+      'Adhkar after prayer',
+      name: 'azkarAfterPrayer',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Adhkar before sleep`
+  String get azkarBeforeSleep {
+    return Intl.message(
+      'Adhkar before sleep',
+      name: 'azkarBeforeSleep',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Adhkar after wakeUp`
+  String get azkarAfterWake {
+    return Intl.message(
+      'Adhkar after wakeUp',
+      name: 'azkarAfterWake',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

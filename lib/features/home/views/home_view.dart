@@ -7,6 +7,7 @@ import "../../../constant.dart";
 import "../../../core/service/ticker_service.dart";
 import "../../../core/widgets/show_bottom_sheet.dart";
 import "../../athan/views/prayer_times_view.dart";
+import "../../azkar/views/azkar_view.dart";
 import "../../battery/cubit/battery_cubit.dart";
 import "../../battery/views/battery_view.dart";
 import "../../date_time/views/clock_view.dart";
@@ -92,7 +93,6 @@ class _HomeViewState extends State<HomeView> with WidgetsBindingObserver {
                         height: isSearchMode ? screenHeight * 0.11 : 0,
                         curve: Curves.easeInOut,
                       ),
-
                       TopBarView(isSearchMode: isSearchMode),
 
                       AnimatedOpacity(
@@ -142,6 +142,7 @@ class _HomeViewState extends State<HomeView> with WidgetsBindingObserver {
                                 ),
                               ),
                               const PrayerTimesView(),
+                              const AzkarView(),
                               Padding(
                                 padding: EdgeInsets.symmetric(
                                   horizontal: kDefaultPadding,
