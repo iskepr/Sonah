@@ -35,5 +35,6 @@
     "azkarEvening":"أذكار المساء",
     "azkarAfterPrayer":"أذكار بعد الصلاة",
     "azkarBeforeSleep":"أذكار قبل النوم",
-    "azkarAfterWake":"أذكار بعد الاستيقاظ"
+    "azkarAfterWakeUp":"أذكار بعد الاستيقاظ",
+    "messageAfterFinishAzkar":"تقبل الله منا ومنكم صالح الأعمال!"
 }

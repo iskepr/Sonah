@@ -33,7 +33,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "azkarAfterPrayer": MessageLookupByLibrary.simpleMessage(
       "أذكار بعد الصلاة",
     ),
-    "azkarAfterWake": MessageLookupByLibrary.simpleMessage(
+    "azkarAfterWakeUp": MessageLookupByLibrary.simpleMessage(
       "أذكار بعد الاستيقاظ",
     ),
     "azkarBeforeSleep": MessageLookupByLibrary.simpleMessage("أذكار قبل النوم"),
@@ -52,6 +52,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "install": MessageLookupByLibrary.simpleMessage("تثبيت"),
     "isha": MessageLookupByLibrary.simpleMessage("العشاء"),
     "maghrib": MessageLookupByLibrary.simpleMessage("المغرب"),
+    "messageAfterFinishAzkar": MessageLookupByLibrary.simpleMessage(
+      "تقبل الله منا ومنكم صالح الأعمال!",
+    ),
     "month": MessageLookupByLibrary.simpleMessage("شهر"),
     "prayerTimes": MessageLookupByLibrary.simpleMessage("مواعيد الصلاة"),
     "remove": MessageLookupByLibrary.simpleMessage("حذف"),

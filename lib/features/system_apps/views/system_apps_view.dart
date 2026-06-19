@@ -62,7 +62,10 @@ class AppsListTile extends StatelessWidget {
             vertical: kSmallPadding * 0.3,
           ),
           leading: AppIcon(iconBytes: app.appInfo.iconBytes),
-          title: Text(appName),
+          title: Text(
+            appName,
+            style: const TextStyle(fontWeight: FontWeight.bold),
+          ),
           onLongPress: () async {
             showMyBottomSheet(
               context: context,

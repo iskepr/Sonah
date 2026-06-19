@@ -1,4 +1,6 @@
-import "dart:async"; // ضفنا دي عشان الـ StreamSubscription
+import "dart:async";
+
+import "package:adhan/adhan.dart";
 import "package:flutter/material.dart";
 import "package:flutter_bloc/flutter_bloc.dart";
 
@@ -18,70 +20,79 @@ class AzkarCubit extends Cubit<AzkarState> {
 
   AzkarCubit({required this.athanCubit}) : super(AzkarInitial()) {
     _athanSubscription = athanCubit.stream.listen((athanState) {
-      if (athanState is AthanLoaded) determineAzkar();
+      if (athanState is AthanLoaded) determineAzkar(athanState);
     });
   }
 
-  void determineAzkar() {
-    safeEmit(AzkarLoading());
-
-    final athanState = athanCubit.state;
+  void determineAzkar(AthanLoaded athanState) {
     final now = DateTime.now();
+    final prayerTimes = athanState.prayerTimes;
 
-    // 1. فحص أذكار بعد الصلاة
-    if (athanState is AthanLoaded) {
-      final times = athanState.prayerTimes;
-      final prayers = [
-        times.fajr,
-        times.dhuhr,
-        times.asr,
-        times.maghrib,
-        times.isha,
-      ];
+    List<dynamic>? targetAzkar;
+    String targetTitle = "";
 
-      final bool isAfterPrayer = prayers.any((prayerTime) {
-        final difference = now.difference(prayerTime).inMinutes;
-        return difference >= 0 && difference <= 20;
-      });
+    // أذكار بعد الصلاة
+    if (athanState.activePrayer != Prayer.none) {
+      final filteredAzker = AzkarConstants.afterPrayer
+          .where(
+            (z) =>
+                z.prayers == null ||
+                z.prayers!.isEmpty ||
+                z.prayers!.contains(athanState.activePrayer),
+          )
+          .toList();
 
-      if (isAfterPrayer) {
-        _initializeAzkar(AzkarConstants.afterPrayer, l10n.azkarAfterPrayer);
-        return;
+      if (filteredAzker.isNotEmpty) {
+        targetAzkar = filteredAzker;
+        targetTitle = l10n.azkarAfterPrayer;
       }
     }
 
+    // أذكار الاستيقاظ
     final DateTime wakeUpTime =
         HiveHelper.getTDataByKey(kBoxSettings, "wakeUpTime") ??
-        DateTime(now.year, now.month, now.day, 7, 0);
-    final DateTime sleepTime =
-        HiveHelper.getTDataByKey(kBoxSettings, "sleepTime") ??
-        DateTime(now.year, now.month, now.day, 23, 0);
+        prayerTimes.fajr;
 
     if (now.difference(wakeUpTime).inMinutes.abs() <= 30) {
-      _initializeAzkar(AzkarConstants.wakingUp, l10n.azkarAfterWake);
+      targetAzkar = AzkarConstants.wakingUp;
+      targetTitle = l10n.azkarAfterWakeUp;
+    }
+
+    // أذكار النوم - من العشاء الى الفجر
+    final int nowMinutes = now.hour * 60 + now.minute;
+    final int ishaMinutes =
+        prayerTimes.isha.hour * 60 + prayerTimes.isha.minute;
+    final int fajrMinutes =
+        prayerTimes.fajr.hour * 60 + prayerTimes.fajr.minute;
+
+    if (nowMinutes >= ishaMinutes || nowMinutes < fajrMinutes) {
+      targetAzkar = AzkarConstants.beforeSleep;
+      targetTitle = l10n.azkarBeforeSleep;
+    }
+
+    // أذكار الصباح - من الفجر الى الظهر
+    if (now.isAfter(prayerTimes.fajr) &&
+        now.isBefore(prayerTimes.dhuhr.add(const Duration(hours: 1)))) {
+      targetAzkar = AzkarConstants.morning;
+      targetTitle = l10n.azkarMorning;
+    }
+    // أذكار المساء - من العصر الى المغرب
+    else if (now.isAfter(prayerTimes.asr) &&
+        now.isBefore(prayerTimes.maghrib)) {
+      targetAzkar = AzkarConstants.evening;
+      targetTitle = l10n.azkarEvening;
+    }
+
+    if (targetAzkar == null || targetTitle.isEmpty) {
+      if (state is! AzkarInitial) safeEmit(AzkarInitial());
+      return;
+    }
+    if (state is AzkarLoaded && (state as AzkarLoaded).title == targetTitle) {
       return;
     }
 
-    if (now.isAfter(sleepTime.subtract(const Duration(minutes: 30))) &&
-        now.isBefore(sleepTime.add(const Duration(hours: 1)))) {
-      _initializeAzkar(AzkarConstants.beforeSleep, l10n.azkarBeforeSleep);
-      return;
-    }
-
-    if (athanState is AthanLoaded) {
-      final times = athanState.prayerTimes;
-      if (now.isAfter(times.fajr) &&
-          now.isBefore(times.dhuhr.add(const Duration(hours: 1)))) {
-        _initializeAzkar(AzkarConstants.morning, l10n.azkarMorning);
-        return;
-      } else if (now.isAfter(times.asr) && now.isBefore(times.maghrib)) {
-        _initializeAzkar(AzkarConstants.evening, l10n.azkarEvening);
-        return;
-      }
-    } else {
-      debugPrint("athanState is not AthanLoaded yet...");
-      safeEmit(AzkarLoaded(azkarList: [], currentCounts: {}, title: ""));
-    }
+    safeEmit(AzkarLoading());
+    _initializeAzkar(targetAzkar, targetTitle);
   }
 
   void _initializeAzkar(List<dynamic> list, String title) {
@@ -92,7 +103,7 @@ class AzkarCubit extends Cubit<AzkarState> {
     safeEmit(AzkarLoaded(azkarList: list, currentCounts: counts, title: title));
   }
 
-  void decrementCounter(int index, Function() onPageNext) {
+  void decrementCounter(int index, VoidCallback onPageNext) {
     if (state is! AzkarLoaded) return;
     VibrationService.light();
 
@@ -118,8 +129,8 @@ class AzkarCubit extends Cubit<AzkarState> {
   }
 
   @override
-  Future<void> close() {
-    _athanSubscription?.cancel();
+  Future<void> close() async {
+    await _athanSubscription?.cancel();
     return super.close();
   }
 }

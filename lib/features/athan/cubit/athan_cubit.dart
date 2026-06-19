@@ -18,11 +18,13 @@ class AthanLoading extends AthanState {}
 
 class AthanLoaded extends AthanState {
   final PrayerTimes prayerTimes;
+  final Prayer activePrayer;
   final Prayer nextPrayer;
   final String remainingTime;
 
   AthanLoaded({
     required this.prayerTimes,
+    required this.activePrayer,
     required this.nextPrayer,
     required this.remainingTime,
   });
@@ -65,8 +67,7 @@ class AthanCubit extends Cubit<AthanState> {
         cachedLocation["longitude"],
       );
 
-      _params = CalculationMethod.karachi.getParameters();
-      _params!.madhab = Madhab.hanafi;
+      _params = CalculationMethod.egyptian.getParameters();
 
       _todayPrayers = PrayerTimes.today(_coordinates!, _params!);
 
@@ -76,11 +77,9 @@ class AthanCubit extends Cubit<AthanState> {
     }
   }
 
-  void _startCentralTimer() {
-    _subscription = tickerService.timeStream.listen((now) {
-      _updateTick(now);
-    });
-  }
+  void _startCentralTimer() => _subscription = tickerService.timeStream.listen(
+    (now) => _updateTick(now),
+  );
 
   void _updateTick(DateTime now) {
     if (_todayPrayers == null ||
@@ -90,6 +89,7 @@ class AthanCubit extends Cubit<AthanState> {
       return;
     }
 
+    final Prayer activePrayer = _getCurrentPrayer(_todayPrayers!, now);
     Prayer next = _todayPrayers!.nextPrayer();
     DateTime? targetTime = _todayPrayers!.timeForPrayer(next);
 
@@ -110,10 +110,30 @@ class AthanCubit extends Cubit<AthanState> {
     safeEmit(
       AthanLoaded(
         prayerTimes: _todayPrayers!,
+        activePrayer: activePrayer,
         nextPrayer: next,
         remainingTime: countdownStr,
       ),
     );
+  }
+
+  Prayer _getCurrentPrayer(PrayerTimes prayerTimes, DateTime now) {
+    final Map<Prayer, DateTime> prayerMap = {
+      Prayer.fajr: prayerTimes.fajr,
+      Prayer.dhuhr: prayerTimes.dhuhr,
+      Prayer.asr: prayerTimes.asr,
+      Prayer.maghrib: prayerTimes.maghrib,
+      Prayer.isha: prayerTimes.isha,
+    };
+
+    for (var entry in prayerMap.entries) {
+      final difference = now.difference(entry.value).inMinutes;
+      if (difference >= 0 && difference <= 35) {
+        return entry.key;
+      }
+    }
+
+    return Prayer.none;
   }
 
   @override

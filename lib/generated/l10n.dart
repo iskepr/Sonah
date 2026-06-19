@@ -260,10 +260,20 @@ class S {
   }
 
   /// `Adhkar after wakeUp`
-  String get azkarAfterWake {
+  String get azkarAfterWakeUp {
     return Intl.message(
       'Adhkar after wakeUp',
-      name: 'azkarAfterWake',
+      name: 'azkarAfterWakeUp',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `May Allah accept our good deeds and yours!`
+  String get messageAfterFinishAzkar {
+    return Intl.message(
+      'May Allah accept our good deeds and yours!',
+      name: 'messageAfterFinishAzkar',
       desc: '',
       args: [],
     );

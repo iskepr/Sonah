@@ -27,7 +27,7 @@ class SettingsView extends StatelessWidget {
           },
         ),
         ListTile(
-          leading: const Icon(LucideIcons.settings),
+          leading: const Icon(LucideIcons.calendar),
           title: const Text("تعديل الروتين اليومي"),
           onTap: () async {
             context.go(kRouteRoutine);

@@ -21,25 +21,16 @@ class _AzkarViewState extends State<AzkarView> {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) =>
-          AzkarCubit(athanCubit: context.read<AthanCubit>())..determineAzkar(),
+      create: (context) => AzkarCubit(athanCubit: context.read<AthanCubit>()),
       child: BlocConsumer<AzkarCubit, AzkarState>(
         listener: (context, state) {
-          if (state is AzkarFinished) {
-            showMessage("تقبل الله منا ومنكم صالح الأعمال!");
-          }
+          if (state is AzkarFinished) showMessage(l10n.messageAfterFinishAzkar);
         },
         builder: (context, state) {
-          if (state is AzkarLoading || state is AzkarInitial) {
-            return const SizedBox.shrink();
-          }
-
           if (state is AzkarLoaded) {
             if (state.azkarList.isEmpty) return const SizedBox.shrink();
 
-            if (_currentIndex >= state.azkarList.length) {
-              _currentIndex = 0;
-            }
+            if (_currentIndex >= state.azkarList.length) _currentIndex = 0;
 
             final zekr = state.azkarList[_currentIndex];
             final currentCount = state.currentCounts[_currentIndex] ?? 0;
@@ -48,40 +39,60 @@ class _AzkarViewState extends State<AzkarView> {
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                // header
                 Padding(
                   padding: const EdgeInsets.symmetric(
                     horizontal: kLargePadding * 2,
                   ),
-                  child: Text(
-                    state.title,
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: kMediumFont,
-                      color: context.colorScheme.primary,
-                    ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Text(
+                        state.title,
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: kMediumFont,
+                          color: context.colorScheme.primary,
+                        ),
+                      ),
+                      Text(
+                        "${_currentIndex + 1}/${state.azkarList.length}",
+                        style: const TextStyle(
+                          fontSize: kSoSmallFont,
+                          color: Colors.grey,
+                        ),
+                      ),
+                    ],
                   ),
                 ),
 
                 const SizedBox(height: kSmallPadding),
                 AnimatedSwitcher(
-                  duration: kAnimationDuration,
-                  transitionBuilder:
-                      (Widget child, Animation<double> animation) {
-                        return FadeTransition(
-                          opacity: animation,
-                          child: SizeTransition(
-                            sizeFactor: animation,
-                            child: child,
+                  duration: kAnimationFasterDuration,
+                  transitionBuilder: (child, Animation<double> animation) {
+                    final scaleAnimation = Tween<double>(begin: 0.9, end: 1.0)
+                        .animate(
+                          CurvedAnimation(
+                            parent: animation,
+                            curve: kCurveEaseInOut,
                           ),
                         );
-                      },
+
+                    return FadeTransition(
+                      opacity: animation,
+                      child: ScaleTransition(
+                        scale: scaleAnimation,
+                        child: child,
+                      ),
+                    );
+                  },
                   child: Card(
                     key: ValueKey<int>(_currentIndex),
                     margin: const EdgeInsets.symmetric(
                       horizontal: kLargePadding,
                       vertical: kSmallPadding,
                     ),
-                    elevation: 4,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(kSmallBorderRadius),
                     ),

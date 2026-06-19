@@ -27,7 +27,7 @@ Future<Position?> getCurrentLocation() async {
     if (!serviceEnabled) {
       serviceEnabled = await location.requestService();
       if (!serviceEnabled) {
-        showMessage("لازم تفتح الـ GPS عشان تسجل حُضور", isError: true);
+        showMessage("لازم تفتح الـ GPS", isError: true);
         return null;
       }
     }
