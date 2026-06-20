@@ -5,7 +5,7 @@ import "package:go_router/go_router.dart";
 import "../../constant.dart";
 import "../../features/home/views/home_view.dart";
 import "../../features/routine/cubit/routine_cubit.dart";
-import "../../features/routine/views/add_routine_view.dart";
+import "../../features/routine/views/edit_routine_view.dart";
 
 CustomTransitionPage pageTransition<T>({
   required BuildContext context,
@@ -41,9 +41,8 @@ final appRouter = GoRouter(
 
   redirect: (context, state) {
     final uri = state.uri;
-    if (uri.scheme == "hodor") return "/${uri.host}${uri.path}";
-
-    return kRouteHome;
+    if (uri.scheme == "sonah") return "/${uri.host}${uri.path}";
+    return null;
   },
 
   routes: [
@@ -54,7 +53,7 @@ final appRouter = GoRouter(
         state: state,
         child: BlocProvider(
           create: (context) => RoutineCubit(),
-          child: const AddRoutineView(),
+          child: const EditRoutineView(),
         ),
       ),
     ),

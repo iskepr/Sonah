@@ -36,7 +36,7 @@ class _MyBottomSheetState extends State<MyBottomSheet> {
       maxChildSize: 0.95,
       builder: (_, controller) => MyMaterial(
         width: double.infinity,
-        theme: MyMaterialTheme.solid,
+        theme: MyMaterialTheme.glass,
         borderRadius: const BorderRadius.vertical(
           top: Radius.circular(kMediumBorderRadius),
         ),

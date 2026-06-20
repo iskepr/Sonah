@@ -125,7 +125,7 @@ class _SinglePrayerViewState extends State<SinglePrayerView> {
             ),
           ),
         ] else ...[
-          Text(widget.time.toTimeOnly(), style: TextStyle(fontSize: fontSize)),
+          Text(widget.time.timeOnly(), style: TextStyle(fontSize: fontSize)),
         ],
       ],
     );

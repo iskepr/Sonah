@@ -31,8 +31,17 @@ class AzkarCubit extends Cubit<AzkarState> {
     List<dynamic>? targetAzkar;
     String targetTitle = "";
 
+    // أذكار الاستيقاظ
+    final DateTime wakeUpTime =
+        HiveHelper.getTDataByKey(kBoxSettings, "wakeUpTime") ??
+        prayerTimes.fajr;
+
+    if (now.difference(wakeUpTime).inMinutes.abs() <= 30) {
+      targetAzkar = AzkarConstants.wakingUp;
+      targetTitle = l10n.azkarAfterWakeUp;
+    }
     // أذكار بعد الصلاة
-    if (athanState.activePrayer != Prayer.none) {
+    else if (athanState.activePrayer != Prayer.none) {
       final filteredAzker = AzkarConstants.afterPrayer
           .where(
             (z) =>
@@ -47,15 +56,17 @@ class AzkarCubit extends Cubit<AzkarState> {
         targetTitle = l10n.azkarAfterPrayer;
       }
     }
-
-    // أذكار الاستيقاظ
-    final DateTime wakeUpTime =
-        HiveHelper.getTDataByKey(kBoxSettings, "wakeUpTime") ??
-        prayerTimes.fajr;
-
-    if (now.difference(wakeUpTime).inMinutes.abs() <= 30) {
-      targetAzkar = AzkarConstants.wakingUp;
-      targetTitle = l10n.azkarAfterWakeUp;
+    // أذكار الصباح - من الفجر الى الظهر
+    else if (now.isAfter(prayerTimes.fajr) &&
+        now.isBefore(prayerTimes.dhuhr.add(const Duration(hours: 1)))) {
+      targetAzkar = AzkarConstants.morning;
+      targetTitle = l10n.azkarMorning;
+    }
+    // أذكار المساء - من العصر الى المغرب
+    else if (now.isAfter(prayerTimes.asr) &&
+        now.isBefore(prayerTimes.maghrib)) {
+      targetAzkar = AzkarConstants.evening;
+      targetTitle = l10n.azkarEvening;
     }
 
     // أذكار النوم - من العشاء الى الفجر
@@ -68,19 +79,6 @@ class AzkarCubit extends Cubit<AzkarState> {
     if (nowMinutes >= ishaMinutes || nowMinutes < fajrMinutes) {
       targetAzkar = AzkarConstants.beforeSleep;
       targetTitle = l10n.azkarBeforeSleep;
-    }
-
-    // أذكار الصباح - من الفجر الى الظهر
-    if (now.isAfter(prayerTimes.fajr) &&
-        now.isBefore(prayerTimes.dhuhr.add(const Duration(hours: 1)))) {
-      targetAzkar = AzkarConstants.morning;
-      targetTitle = l10n.azkarMorning;
-    }
-    // أذكار المساء - من العصر الى المغرب
-    else if (now.isAfter(prayerTimes.asr) &&
-        now.isBefore(prayerTimes.maghrib)) {
-      targetAzkar = AzkarConstants.evening;
-      targetTitle = l10n.azkarEvening;
     }
 
     if (targetAzkar == null || targetTitle.isEmpty) {

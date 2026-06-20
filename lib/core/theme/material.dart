@@ -104,14 +104,16 @@ class MyMaterial extends StatelessWidget {
         begin: Alignment.topLeft,
         end: Alignment.bottomRight,
         colors: [
-          context.foreground.withOpacity(0.3),
+          context.colorScheme.primaryContainer.withOpacity(0.3),
           Colors.transparent,
-          context.foreground.withOpacity(0.3),
+          context.colorScheme.primaryContainer.withOpacity(0.3),
         ],
       );
     }
 
-    final Color baseColor = whiteBG ? context.foreground : context.background;
+    final Color baseColor = whiteBG
+        ? context.colorScheme.primaryContainer.withOpacity(0.9)
+        : context.background;
     return LinearGradient(
       begin: Alignment.topLeft,
       end: Alignment.bottomRight,

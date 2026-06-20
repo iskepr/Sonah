@@ -1,5 +1,8 @@
 import "package:flutter/material.dart";
 import "package:flutter_bloc/flutter_bloc.dart";
+import "package:go_router/go_router.dart";
+
+import "../../constant.dart";
 
 export "date_time_extensions.dart";
 export "string_extensions.dart";
@@ -27,11 +30,11 @@ extension StringExtension on String? {
 extension NavigationHelpers on BuildContext {
   void close<T>([T? result]) {
     if (!mounted) return;
-    // if (canPop()) {
-    Navigator.of(this).pop(result);
-    // } else {
-    // go(kRouteHome);
-    // }
+    if (canPop()) {
+      Navigator.of(this).pop(result);
+    } else {
+      go(kRouteHome);
+    }
   }
 }
 

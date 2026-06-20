@@ -1,7 +1,7 @@
 import "package:intl/intl.dart";
 
 extension DateTimeFormat on DateTime {
-  String toTimeOnly({bool showPeriod = true, bool isArabic = true}) {
+  String timeOnly({bool showPeriod = true, bool isArabic = true}) {
     final e = isUtc ? toLocal() : this;
     final h = e.hour % 12 == 0 ? 12 : e.hour % 12;
 
@@ -27,13 +27,13 @@ extension DateTimeFormat on DateTime {
     return DateFormat("d MMMM ${now.year == e.year ? "" : "yy"}").format(e);
   }
 
-  String get fullDateTime => "$dateOnly $toTimeOnly";
+  String get fullDateTime => "$dateOnly $timeOnly";
 
   String get smartFormat {
     final e = isUtc ? toLocal() : this;
     final now = DateTime.now();
     if (e.day == now.day && e.month == now.month && e.year == now.year) {
-      return toTimeOnly();
+      return timeOnly();
     }
     return dateOnly;
   }
@@ -47,7 +47,7 @@ extension DateTimeFormat on DateTime {
     final e = isUtc ? toLocal() : this;
     final now = DateTime.now();
     if (e.day == now.day && e.month == now.month && e.year == now.year) {
-      return toTimeOnly();
+      return timeOnly();
     }
     return fullDateTime;
   }

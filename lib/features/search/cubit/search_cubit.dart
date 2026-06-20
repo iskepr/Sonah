@@ -4,6 +4,7 @@ import "package:flutter_contacts/flutter_contacts.dart";
 import "package:flutter_device_apps/flutter_device_apps.dart";
 
 import "../../../core/extensions/extensions.dart";
+import "../../../core/utils/platform_utils.dart";
 import "../../system_apps/models/application_model.dart";
 import "../service/search_in_google_servic.dart";
 import "../service/start_call_service.dart";
@@ -19,6 +20,8 @@ class SearchCubit extends Cubit<SearchState> {
   final List<ApplicationModel> allApps;
 
   Future<void> _loadContacts() async {
+    if (!PlatformUtils.isAndroid) return;
+
     emit(state.copyWith(isContactsLoading: true));
 
     final status = await FlutterContacts.permissions.request(
