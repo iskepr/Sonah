@@ -56,3 +56,19 @@ extension FormateNames on String {
     return names.join(" ");
   }
 }
+
+extension DurationToString on Duration {
+  String toHHMM() {
+    if (inMinutes > 0) {
+      final hours = inHours;
+      final minutes = inMinutes % 60;
+      if (hours > 0) {
+        return "$hours ساعة و $minutes دقيقة";
+      } else {
+        return "$minutes دقيقة";
+      }
+    } else {
+      return "لم يُستخدم اليوم";
+    }
+  }
+}

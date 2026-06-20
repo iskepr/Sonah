@@ -3,6 +3,7 @@ import "package:flutter_bloc/flutter_bloc.dart";
 import "package:go_router/go_router.dart";
 
 import "../../constant.dart";
+import "../../features/get_start/views/permissions_view.dart";
 import "../../features/home/views/home_view.dart";
 import "../../features/routine/cubit/routine_cubit.dart";
 import "../../features/routine/views/edit_routine_view.dart";
@@ -34,8 +35,10 @@ CustomTransitionPage pageTransition<T>({
   );
 }
 
+bool isFirstOpen = true;
+
 final appRouter = GoRouter(
-  initialLocation: kRouteHome,
+  initialLocation: isFirstOpen ? kRouteGetStarted : kRouteHome,
 
   navigatorKey: kNavigatorKey,
 
@@ -46,17 +49,6 @@ final appRouter = GoRouter(
   },
 
   routes: [
-    GoRoute(
-      path: kRouteRoutine,
-      pageBuilder: (context, state) => pageTransition(
-        context: context,
-        state: state,
-        child: BlocProvider(
-          create: (context) => RoutineCubit(),
-          child: const EditRoutineView(),
-        ),
-      ),
-    ),
     GoRoute(
       path: kRouteHome,
       pageBuilder: (context, state) {
@@ -69,6 +61,25 @@ final appRouter = GoRouter(
           ),
         );
       },
+    ),
+    GoRoute(
+      path: kRouteGetStarted,
+      pageBuilder: (context, state) => pageTransition(
+        context: context,
+        state: state,
+        child: const PermissionsView(),
+      ),
+    ),
+    GoRoute(
+      path: kRouteRoutine,
+      pageBuilder: (context, state) => pageTransition(
+        context: context,
+        state: state,
+        child: BlocProvider(
+          create: (context) => RoutineCubit(),
+          child: const EditRoutineView(),
+        ),
+      ),
     ),
   ],
 );

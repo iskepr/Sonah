@@ -38,6 +38,7 @@ const String kBoxSettings = "box_settings";
 
 // Routers
 const String kRouteHome = "/";
+const String kRouteGetStarted = "/get_started";
 const String kRouteRoutine = "/routine";
 
 // Globals

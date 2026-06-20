@@ -6,6 +6,7 @@ class ApplicationModel {
   final bool isHidden;
   final int openCount;
   final DateTime? lastOpenTime;
+  final Duration usageTime;
 
   ApplicationModel({
     required this.appInfo,
@@ -13,6 +14,7 @@ class ApplicationModel {
     this.isHidden = false,
     this.openCount = 0,
     this.lastOpenTime,
+    this.usageTime = Duration.zero,
   });
 
   Map<String, dynamic> toMap() {
@@ -22,6 +24,7 @@ class ApplicationModel {
       "openCount": openCount,
       "lastOpenTime": lastOpenTime?.millisecondsSinceEpoch,
       "appInfo": _appInfoToMap(appInfo),
+      "usageTime": usageTime.inMilliseconds,
     };
   }
 
@@ -34,6 +37,9 @@ class ApplicationModel {
           ? DateTime.fromMillisecondsSinceEpoch(map["lastOpenTime"])
           : null,
       appInfo: AppInfo.fromMap(Map<String, Object?>.from(map["appInfo"] ?? {})),
+      usageTime: map["usageTime"] != null
+          ? Duration(milliseconds: map["usageTime"] as int)
+          : Duration.zero,
     );
   }
 
@@ -67,6 +73,7 @@ class ApplicationModel {
     bool? isHidden,
     int? openCount,
     DateTime? lastOpenTime,
+    Duration? usageTime,
   }) {
     return ApplicationModel(
       appInfo: appInfo ?? this.appInfo,
@@ -74,6 +81,7 @@ class ApplicationModel {
       isHidden: isHidden ?? this.isHidden,
       openCount: openCount ?? this.openCount,
       lastOpenTime: lastOpenTime ?? this.lastOpenTime,
+      usageTime: usageTime ?? this.usageTime,
     );
   }
 }

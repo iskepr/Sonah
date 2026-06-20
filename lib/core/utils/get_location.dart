@@ -5,7 +5,7 @@ import "package:location/location.dart" as loc;
 import "platform_utils.dart";
 import "show_message.dart";
 
-Future<Position?> getCurrentLocation() async {
+Future<Position?> getCurrentLocation({bool requestPermission = false}) async {
   final Position defaultLocation = Position(
     longitude: 31.2268,
     latitude: 30.0588,
@@ -31,7 +31,6 @@ Future<Position?> getCurrentLocation() async {
         return null;
       }
     }
-
     LocationPermission permission = await Geolocator.checkPermission();
     if (permission == LocationPermission.denied) {
       permission = await Geolocator.requestPermission();
@@ -40,7 +39,6 @@ Future<Position?> getCurrentLocation() async {
         return null;
       }
     }
-
     if (permission == LocationPermission.deniedForever) {
       showMessage(
         "الصلاحيات مرفوضة نهائياً، افتحها من الإعدادات",
@@ -48,6 +46,7 @@ Future<Position?> getCurrentLocation() async {
       );
       return null;
     }
+    if (requestPermission) return null;
 
     late LocationSettings locationSettings;
 

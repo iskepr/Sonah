@@ -3,24 +3,16 @@ import "dart:async";
 import "package:flutter/material.dart";
 import "package:flutter_bloc/flutter_bloc.dart";
 import "package:flutter_device_apps/flutter_device_apps.dart";
+import "package:usage_stats/usage_stats.dart" hide AppInfo;
 
 import "../../../constant.dart";
 import "../../../core/extensions/extensions.dart";
 import "../../../core/helpers/hive_helper.dart";
 import "../../../core/utils/platform_utils.dart";
 import "../models/application_model.dart";
+import "system_apps_state.dart";
 
-class SystemAppsState {}
-
-class SystemAppsInitial extends SystemAppsState {}
-
-class SystemAppsLoading extends SystemAppsState {}
-
-class SystemAppsLoaded extends SystemAppsState {
-  final List<ApplicationModel> apps;
-  final int appsCount;
-  SystemAppsLoaded({required this.apps, required this.appsCount});
-}
+export "system_apps_state.dart";
 
 class SystemAppsCubit extends Cubit<SystemAppsState> {
   SystemAppsCubit() : super(SystemAppsInitial()) {
@@ -55,12 +47,42 @@ class SystemAppsCubit extends Cubit<SystemAppsState> {
       return;
     }
 
+    Map<String, Duration> usageMap = {};
+    try {
+      final bool? isPermissionGranted = await UsageStats.checkUsagePermission();
+      if (isPermissionGranted == true) {
+        final DateTime now = DateTime.now();
+        final DateTime startDate = DateTime(now.year, now.month, now.day);
+        final DateTime endDate = now;
+
+        final List<UsageInfo> infoList = await UsageStats.queryUsageStats(
+          startDate,
+          endDate,
+        );
+
+        usageMap = {
+          for (var info in infoList)
+            if (info.packageName != null && info.totalTimeInForeground != null)
+              info.packageName!: Duration(
+                milliseconds: int.parse(info.totalTimeInForeground!),
+              ),
+        };
+      } else {
+        debugPrint("المستخدم رفض إعطاء صلاحية الوصول للاستخدام");
+      }
+    } catch (e) {
+      debugPrint("فشل جلب أوقات الاستخدام (قد يكون بسبب نقص الصلاحية): $e");
+    }
+
     apps = appsInfo.map((info) {
       final oldApp = apps.firstWhere(
         (element) => element.appInfo.packageName == info.packageName,
         orElse: () => ApplicationModel(appInfo: info),
       );
-      return oldApp.copyWith(appInfo: info);
+
+      final appDuration = usageMap[info.packageName] ?? Duration.zero;
+
+      return oldApp.copyWith(appInfo: info, usageTime: appDuration);
     }).toList();
 
     _sortApps(apps);
@@ -122,7 +144,7 @@ class SystemAppsCubit extends Cubit<SystemAppsState> {
       }
 
       if (hasChanged) {
-        _saveToHive(); // حفظ التعديل الجديد في الكاش
+        _saveToHive();
         safeEmit(SystemAppsLoaded(apps: apps, appsCount: apps.length));
       }
     }, onError: (error) => debugPrint("خطأ في تتبع التغييرات: $error"));

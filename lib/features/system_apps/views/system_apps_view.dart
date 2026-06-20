@@ -1,5 +1,6 @@
 import "dart:typed_data";
 
+import "package:android_intent_plus/android_intent.dart";
 import "package:flutter/material.dart";
 import "package:flutter_bloc/flutter_bloc.dart";
 import "package:flutter_device_apps/flutter_device_apps.dart";
@@ -56,6 +57,7 @@ class AppsListTile extends StatelessWidget {
         final String packageName = app.appInfo.packageName ?? "";
         final bool isFavorite = app.isFavorite;
         final bool isHidden = app.isHidden;
+        final Duration usageTime = app.usageTime;
 
         return ListTile(
           contentPadding: const EdgeInsets.symmetric(
@@ -78,7 +80,15 @@ class AppsListTile extends StatelessWidget {
                       style: const TextStyle(fontWeight: FontWeight.bold),
                     ),
                     leading: AppIcon(iconBytes: app.appInfo.iconBytes),
-                    subtitle: Text("3 ساعات $packageName"),
+                    subtitle: GestureDetector(
+                      onTap: () async {
+                        const intent = AndroidIntent(
+                          action: "android.settings.USAGE_ACCESS_SETTINGS",
+                        );
+                        await intent.launch();
+                      },
+                      child: Text(usageTime.toHHMM()),
+                    ),
                     trailing: const Icon(LucideIcons.circleAlert),
                     onTap: () async =>
                         await FlutterDeviceApps.openAppSettings(packageName),
@@ -151,6 +161,8 @@ class AppsListTile extends StatelessWidget {
                         if (context.mounted) context.close();
                       },
                     ),
+
+                  Center(child: Text(packageName)),
                 ],
               ),
             );

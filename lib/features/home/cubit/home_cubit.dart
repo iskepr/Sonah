@@ -35,6 +35,7 @@ class HomeCubit extends Cubit<HomeState> {
     if (lifecycleState == AppLifecycleState.paused) {
       _tickerService.pause();
       _batteryCubit.stopListening();
+      state.isSearchMode ? emit(state.copyWith(isSearchMode: false)) : null;
       emit(state.copyWith(isAppPaused: true));
     } else if (lifecycleState == AppLifecycleState.resumed) {
       SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
