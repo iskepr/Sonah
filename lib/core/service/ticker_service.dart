@@ -6,8 +6,10 @@ class TickerService {
 
   Stream<DateTime> get timeStream {
     if (_controller == null || _controller!.isClosed) {
-      _controller = StreamController<DateTime>.broadcast();
-      _startTimer();
+      _controller = StreamController<DateTime>.broadcast(
+        onListen: _startTimer,
+        onCancel: _stopTimer,
+      );
     }
     return _controller!.stream;
   }
@@ -15,22 +17,24 @@ class TickerService {
   void _startTimer() {
     _timer?.cancel();
     _timer = Timer.periodic(const Duration(seconds: 1), (_) {
-      if (_controller != null && !_controller!.isClosed) {
+      if (_controller != null &&
+          !_controller!.isClosed &&
+          _controller!.hasListener) {
         _controller!.add(DateTime.now());
       }
     });
   }
 
-  void pause() {
+  void _stopTimer() {
     _timer?.cancel();
+    _timer = null;
   }
 
-  void resume() {
-    _startTimer();
-  }
+  void pause() => _stopTimer();
+  void resume() => _startTimer();
 
   void dispose() {
-    _timer?.cancel();
+    _stopTimer();
     _controller?.close();
   }
 }
