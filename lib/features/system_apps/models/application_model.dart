@@ -23,7 +23,11 @@ class ApplicationModel extends HiveObject {
   @HiveField(5)
   final int usageTimeInMillis;
 
+  @HiveField(7)
+  final int usageTimeLimitInMillis;
+
   final Duration usageTime;
+  final Duration usageTimeLimit;
 
   ApplicationModel({
     required this.appInfoMap,
@@ -32,10 +36,15 @@ class ApplicationModel extends HiveObject {
     this.openCount = 0,
     this.lastOpenTime,
     Duration usageTime = Duration.zero,
+    Duration usageTimeLimit = Duration.zero,
   }) : usageTime = usageTime,
-       usageTimeInMillis = usageTime.inMilliseconds;
+       usageTimeInMillis = usageTime.inMilliseconds,
+       usageTimeLimit = usageTimeLimit,
+       usageTimeLimitInMillis = usageTimeLimit.inMilliseconds;
 
   Duration get currentUsageTime => Duration(milliseconds: usageTimeInMillis);
+  Duration get currentUsageTimeLimit =>
+      Duration(milliseconds: usageTimeLimitInMillis);
 
   AppInfo get appInfo => AppInfo.fromMap(Map<String, Object?>.from(appInfoMap));
 
@@ -57,6 +66,7 @@ class ApplicationModel extends HiveObject {
     int? openCount,
     DateTime? lastOpenTime,
     Duration? usageTime,
+    Duration? usageTimeLimit,
   }) {
     return ApplicationModel(
       appInfoMap: appInfo != null ? appInfoToMap(appInfo) : appInfoMap,
@@ -65,6 +75,7 @@ class ApplicationModel extends HiveObject {
       openCount: openCount ?? this.openCount,
       lastOpenTime: lastOpenTime ?? this.lastOpenTime,
       usageTime: usageTime ?? currentUsageTime,
+      usageTimeLimit: usageTimeLimit ?? currentUsageTimeLimit,
     );
   }
 }

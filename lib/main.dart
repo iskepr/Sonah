@@ -14,6 +14,7 @@ import "features/date_time/cubits/clock_cubit.dart";
 import "features/date_time/cubits/progress_cubit.dart";
 import "features/search/cubit/search_cubit.dart";
 import "features/system_apps/cubit/system_apps_cubit.dart";
+import "features/system_apps/repo/system_apps_repository.dart";
 import "generated/l10n.dart";
 
 void main() async {
@@ -48,11 +49,17 @@ class Sonah extends StatelessWidget {
                 create: (context) =>
                     BatteryCubit(tickerService: context.read<TickerService>()),
               ),
-              BlocProvider(create: (context) => SystemAppsCubit()..getApps()),
+              BlocProvider(
+                create: (context) => SystemAppsCubit(
+                  tickerService: context.read<TickerService>(),
+                  repository: SystemAppsRepository(),
+                )..getApps(),
+              ),
               BlocProvider(create: (context) => ProgressCubit()),
               BlocProvider(
-                create: (context) =>
-                    SearchCubit(allApps: context.read<SystemAppsCubit>().apps),
+                create: (context) => SearchCubit(
+                  systemAppsCubit: context.read<SystemAppsCubit>(),
+                ),
               ),
             ],
             child: MaterialApp.router(

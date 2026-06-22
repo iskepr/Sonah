@@ -41,7 +41,10 @@ class AppsListTile extends StatelessWidget {
             style: const TextStyle(fontWeight: FontWeight.bold),
           ),
           onLongPress: () => onLongPressApp(context, app, cubit),
-          onTap: () async => await FlutterDeviceApps.openApp(packageName),
+          onTap: () async {
+            await cubit.incrementOpenCount(packageName);
+            await FlutterDeviceApps.openApp(packageName);
+          },
         );
       },
     );

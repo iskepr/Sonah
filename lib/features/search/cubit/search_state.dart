@@ -15,7 +15,6 @@ class SearchState {
     this.isContactsLoading = false,
   });
 
-  // دالة الـ copyWith عشان نحدث أجزاء معينة من الـ State بنضافة
   SearchState copyWith({
     String? searchQuery,
     List<Contact>? allContacts,

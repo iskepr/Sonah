@@ -1,24 +1,27 @@
 import "dart:async";
-
 import "package:flutter/material.dart";
 import "package:flutter_bloc/flutter_bloc.dart";
 import "package:flutter_device_apps/flutter_device_apps.dart";
-import "package:usage_stats/usage_stats.dart" hide AppInfo;
 
-import "../../../constant.dart";
 import "../../../core/extensions/extensions.dart";
-import "../../../core/helpers/hive_helper.dart";
+import "../../../core/service/ticker_service.dart";
 import "../../../core/utils/platform_utils.dart";
 import "../models/application_model.dart";
+import "../repo/system_apps_repository.dart";
 import "system_apps_state.dart";
 
 export "system_apps_state.dart";
 
 class SystemAppsCubit extends Cubit<SystemAppsState> {
-  SystemAppsCubit() : super(SystemAppsInitial());
+  final TickerService tickerService;
+  final SystemAppsRepository repository;
 
-  List<ApplicationModel> apps = [];
+  StreamSubscription<DateTime>? _tickerSubscription;
   StreamSubscription<AppChangeEvent>? _appsSubscription;
+  List<ApplicationModel> apps = [];
+
+  SystemAppsCubit({required this.tickerService, required this.repository})
+    : super(SystemAppsInitial());
 
   void getApps() async {
     if (!PlatformUtils.isAndroid) {
@@ -26,74 +29,46 @@ class SystemAppsCubit extends Cubit<SystemAppsState> {
       return;
     }
 
-    apps = HiveHelper.getListData<ApplicationModel>(kBoxSystemApps);
-    safeEmit(SystemAppsLoaded(apps: apps, appsCount: apps.length));
-
-    final List<AppInfo> appsInfo = await FlutterDeviceApps.listApps(
-      includeSystem: true,
-      includeIcons: true,
-      onlyLaunchable: true,
-    );
-
-    if (appsInfo.isEmpty) {
-      if (apps.isEmpty) safeEmit(SystemAppsLoaded(apps: [], appsCount: 0));
-      return;
+    // قراءة الكاش وعرضه فوراً
+    apps = repository.getCachedApps();
+    if (apps.isNotEmpty) {
+      safeEmit(SystemAppsLoaded(apps: apps, appsCount: apps.length));
+    } else {
+      safeEmit(SystemAppsLoading());
     }
 
-    Map<String, Duration> usageMap = {};
-    try {
-      final bool? isPermissionGranted = await UsageStats.checkUsagePermission();
-      if (isPermissionGranted == true) {
-        final DateTime now = DateTime.now();
-        final DateTime startDate = DateTime(now.year, now.month, now.day);
-        final DateTime endDate = now;
-
-        final List<UsageInfo> infoList = await UsageStats.queryUsageStats(
-          startDate,
-          endDate,
-        );
-
-        usageMap = {
-          for (var info in infoList)
-            if (info.packageName != null && info.totalTimeInForeground != null)
-              info.packageName!: Duration(
-                milliseconds: int.parse(info.totalTimeInForeground!),
-              ),
-        };
-      } else {
-        debugPrint("المستخدم رفض إعطاء صلاحية الوصول للاستخدام");
-      }
-    } catch (e) {
-      debugPrint("فشل جلب أوقات الاستخدام (قد يكون بسبب نقص الصلاحية): $e");
-    }
-
-    apps = appsInfo.map((info) {
-      final oldApp = apps.firstWhere(
-        (element) => element.appInfo.packageName == info.packageName,
-        orElse: () => ApplicationModel(appInfoMap: appInfoToMap(info)),
-      );
-
-      final appDuration = usageMap[info.packageName] ?? Duration.zero;
-
-      return oldApp.copyWith(appInfo: info, usageTime: appDuration);
-    }).toList();
-
-    _sortApps(apps);
-
-    _saveToHive();
-
+    // جلب تطبيقات السيستم
+    apps = await repository.fetchDeviceApps(apps);
+    repository.cacheApps(apps);
     safeEmit(SystemAppsLoaded(apps: apps, appsCount: apps.length));
+
+    // تحديث أوقات الاستخدام
+    await refreshUsageStats();
+
     _startListeningToChanges();
+    _listenToCentralTicker();
   }
 
-  void _saveToHive() =>
-      HiveHelper.saveListData<ApplicationModel>(kBoxSystemApps, apps);
+  Future<void> refreshUsageStats() async {
+    if (!PlatformUtils.isAndroid || apps.isEmpty) return;
 
-  void _sortApps(List<ApplicationModel> list) => list.sort(
-    (a, b) => (a.appInfo.appName ?? "").toLowerCase().compareTo(
-      (b.appInfo.appName ?? "").toLowerCase(),
-    ),
-  );
+    final usageMap = await repository.fetchTodayUsageMap();
+
+    apps = apps.map((app) {
+      return app.copyWith(usageTime: usageMap[app.appInfo.packageName]);
+    }).toList();
+
+    apps = repository.sortApps(apps);
+    repository.cacheApps(apps);
+    safeEmit(SystemAppsLoaded(apps: apps, appsCount: apps.length));
+  }
+
+  void _listenToCentralTicker() {
+    _tickerSubscription?.cancel();
+    _tickerSubscription = tickerService.timeStream.listen((now) {
+      if (now.second % 15 == 0) refreshUsageStats();
+    });
+  }
 
   void _startListeningToChanges() {
     _appsSubscription = FlutterDeviceApps.appChanges.listen((
@@ -112,7 +87,7 @@ class SystemAppsCubit extends Cubit<SystemAppsState> {
         );
         if (newApp != null) {
           apps.add(ApplicationModel(appInfoMap: appInfoToMap(newApp)));
-          _sortApps(apps);
+          repository.sortApps(apps);
           hasChanged = true;
         }
       } else if (event.type == AppChangeType.updated) {
@@ -126,37 +101,47 @@ class SystemAppsCubit extends Cubit<SystemAppsState> {
           );
           if (index != -1) {
             apps[index] = apps[index].copyWith(appInfo: updatedApp);
-            _sortApps(apps);
+            repository.sortApps(apps);
             hasChanged = true;
           }
         }
       }
 
-      if (hasChanged) {
-        _saveToHive();
-        safeEmit(SystemAppsLoaded(apps: apps, appsCount: apps.length));
-      }
+      if (hasChanged) await refreshUsageStats();
     }, onError: (error) => debugPrint("خطأ في تتبع التغييرات: $error"));
   }
 
   Future<void> toggleFavorite(String packageName, bool isFavorite) async {
-    final index = apps.indexWhere(
-      (app) => app.appInfo.packageName == packageName,
+    _updateAppProperty(
+      packageName,
+      (app) => app.copyWith(isFavorite: isFavorite),
     );
-    if (index != -1) {
-      apps[index] = apps[index].copyWith(isFavorite: isFavorite);
-      _saveToHive();
-      safeEmit(SystemAppsLoaded(apps: apps, appsCount: apps.length));
-    }
   }
 
   Future<void> toggleHidden(String packageName, bool isHidden) async {
+    _updateAppProperty(packageName, (app) => app.copyWith(isHidden: isHidden));
+  }
+
+  Future<void> incrementOpenCount(String packageName) async {
+    _updateAppProperty(
+      packageName,
+      (app) => app.copyWith(
+        openCount: app.openCount + 1,
+        lastOpenTime: DateTime.now(),
+      ),
+    );
+  }
+
+  void _updateAppProperty(
+    String packageName,
+    ApplicationModel Function(ApplicationModel) update,
+  ) {
     final index = apps.indexWhere(
       (app) => app.appInfo.packageName == packageName,
     );
     if (index != -1) {
-      apps[index] = apps[index].copyWith(isHidden: isHidden);
-      _saveToHive();
+      apps[index] = update(apps[index]);
+      repository.cacheApps(apps);
       safeEmit(SystemAppsLoaded(apps: apps, appsCount: apps.length));
     }
   }
@@ -164,6 +149,7 @@ class SystemAppsCubit extends Cubit<SystemAppsState> {
   @override
   Future<void> close() {
     _appsSubscription?.cancel();
+    _tickerSubscription?.cancel();
     return super.close();
   }
 }
