@@ -10,12 +10,8 @@ class HomeCubit extends Cubit<HomeState> {
   final TickerService _tickerService;
   final BatteryCubit _batteryCubit;
 
-  HomeCubit({
-    required TickerService tickerService,
-    required BatteryCubit batteryCubit,
-  }) : _tickerService = tickerService,
-       _batteryCubit = batteryCubit,
-       super(const HomeState());
+  HomeCubit({required this._tickerService, required this._batteryCubit})
+    : super(const HomeState());
 
   void handleScrollVelocity(double velocity) {
     if (velocity < -300 && !state.isSearchMode) {

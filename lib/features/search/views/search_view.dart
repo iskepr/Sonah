@@ -6,7 +6,7 @@ import "../../../constant.dart";
 import "../../../core/extensions/extensions.dart";
 import "../../../core/theme/colors.dart";
 import "../../system_apps/cubit/system_apps_cubit.dart";
-import "../../system_apps/views/system_apps_view.dart";
+import "../../system_apps/views/widgets/apps_list_tile.dart";
 import "../cubit/search_cubit.dart";
 import "../service/search_in_google_servic.dart";
 import "widgets/contacts_list_view.dart";

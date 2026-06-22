@@ -15,9 +15,7 @@ import "system_apps_state.dart";
 export "system_apps_state.dart";
 
 class SystemAppsCubit extends Cubit<SystemAppsState> {
-  SystemAppsCubit() : super(SystemAppsInitial()) {
-    getApps();
-  }
+  SystemAppsCubit() : super(SystemAppsInitial());
 
   List<ApplicationModel> apps = [];
   StreamSubscription<AppChangeEvent>? _appsSubscription;

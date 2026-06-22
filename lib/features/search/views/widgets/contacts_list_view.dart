@@ -18,6 +18,7 @@ class ContactsListView extends StatelessWidget {
     return ListView.builder(
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
+      padding: EdgeInsets.zero,
       itemCount: filteredContacts.length.clamp(0, 3),
       itemBuilder: (context, index) {
         final contact = filteredContacts[index];
@@ -25,15 +26,15 @@ class ContactsListView extends StatelessWidget {
           contentPadding: EdgeInsets.zero,
           leading: contact.photo != null && contact.photo!.thumbnail != null
               ? ClipRRect(
-                  borderRadius: BorderRadius.circular(kCircleBorderRadius),
+                  borderRadius: BorderRadius.circular(kAppIconRadius),
                   child: Image.memory(
                     contact.photo!.thumbnail!,
-                    width: kLargeFont * 2,
+                    width: kAppIconSize,
                   ),
                 )
               : Icon(
                   LucideIcons.circleUserRound300,
-                  size: kLargeFont * 2,
+                  size: kAppIconSize,
                   color: context.primary,
                 ),
           title: Text(contact.displayName ?? ""),

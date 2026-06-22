@@ -11,6 +11,9 @@ const double kMediumFont = 16;
 const double kLargeFont = 20;
 const double kSoLargeFont = 24;
 
+const double kAppIconSize = kLargeFont * 1.8;
+const double kAppIconRadius = kAppIconSize / 2;
+
 // Paddings
 const double kSmallPadding = 5;
 const double kMediumPadding = 10;
@@ -35,6 +38,7 @@ const Curve kCurveEaseOutBack = Curves.easeOutBack;
 // Hive Boxes
 const String kBoxSettings = "box_settings";
 const String kBoxSystemApps = "box_system_apps";
+const String kBoxAzkar = "box_azkar";
 const String kBoxRoutine = "box_routine";
 
 // Routers

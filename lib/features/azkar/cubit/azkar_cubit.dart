@@ -18,22 +18,38 @@ class AzkarCubit extends Cubit<AzkarState> {
   final AthanCubit athanCubit;
   StreamSubscription? _athanSubscription;
 
+  Prayer? _lastActivePrayer;
+  int? _lastMinute;
+
   AzkarCubit({required this.athanCubit}) : super(AzkarInitial()) {
     _athanSubscription = athanCubit.stream.listen((athanState) {
-      if (athanState is AthanLoaded) determineAzkar(athanState);
+      if (athanState is AthanLoaded) {
+        final now = DateTime.now();
+
+        if (_lastActivePrayer == athanState.activePrayer &&
+            _lastMinute == now.minute) {
+          return;
+        }
+
+        _lastActivePrayer = athanState.activePrayer;
+        _lastMinute = now.minute;
+
+        determineAzkar(athanState, now);
+      }
     });
   }
 
-  void determineAzkar(AthanLoaded athanState) {
-    final now = DateTime.now();
+  void determineAzkar(AthanLoaded athanState, DateTime now) {
     final prayerTimes = athanState.prayerTimes;
-
-    debugPrint(
-      "Current time: $now, Fajr time: ${prayerTimes.fajr}, Active prayer: ${athanState.activePrayer}",
-    );
 
     List<dynamic>? targetAzkar;
     String targetTitle = "";
+
+    final int nowMinutes = now.hour * 60 + now.minute;
+    final int ishaMinutes =
+        prayerTimes.isha.hour * 60 + prayerTimes.isha.minute;
+    final int fajrMinutes =
+        prayerTimes.fajr.hour * 60 + prayerTimes.fajr.minute;
 
     // أذكار الاستيقاظ
     final DateTime wakeUpTime =
@@ -71,15 +87,8 @@ class AzkarCubit extends Cubit<AzkarState> {
       targetAzkar = AzkarConstants.evening;
       targetTitle = l10n.azkarEvening;
     }
-
     // أذكار النوم - من العشاء الى الفجر
-    final int nowMinutes = now.hour * 60 + now.minute;
-    final int ishaMinutes =
-        prayerTimes.isha.hour * 60 + prayerTimes.isha.minute;
-    final int fajrMinutes =
-        prayerTimes.fajr.hour * 60 + prayerTimes.fajr.minute;
-
-    if (nowMinutes >= ishaMinutes || nowMinutes < fajrMinutes) {
+    else if (nowMinutes >= ishaMinutes || nowMinutes < fajrMinutes) {
       targetAzkar = AzkarConstants.beforeSleep;
       targetTitle = l10n.azkarBeforeSleep;
     }

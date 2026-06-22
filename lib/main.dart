@@ -48,7 +48,7 @@ class Sonah extends StatelessWidget {
                 create: (context) =>
                     BatteryCubit(tickerService: context.read<TickerService>()),
               ),
-              BlocProvider(create: (context) => SystemAppsCubit()),
+              BlocProvider(create: (context) => SystemAppsCubit()..getApps()),
               BlocProvider(create: (context) => ProgressCubit()),
               BlocProvider(
                 create: (context) =>

@@ -7,7 +7,7 @@ import "../../features/system_apps/models/application_model.dart";
 import "../utils/platform_utils.dart";
 
 class HiveHelper {
-  static const boxes = [kBoxSystemApps, kBoxSettings, kBoxRoutine];
+  static const boxes = [kBoxSystemApps, kBoxSettings, kBoxAzkar, kBoxRoutine];
 
   static Future<void> init() async {
     String? path;
