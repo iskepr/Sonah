@@ -3,9 +3,7 @@ import "package:adhan/adhan.dart";
 import "package:flutter/material.dart";
 import "package:flutter_bloc/flutter_bloc.dart";
 
-import "../../../constant.dart";
 import "../../../core/extensions/extensions.dart";
-import "../../../core/helpers/hive_helper.dart";
 import "../../../core/service/ticker_service.dart";
 import "../../../core/utils/get_location.dart";
 import "../../../core/utils/show_message.dart";
@@ -40,19 +38,8 @@ class AthanCubit extends Cubit<AthanState> {
 
   AthanCubit({required this.tickerService}) : super(AthanInitial()) {
     _startCentralTimer();
-    getLocation();
+    getLocalLocation();
     WidgetsBinding.instance.addPostFrameCallback((_) => getAthanTimes());
-  }
-
-  Future<Map<String, dynamic>?> getLocation() async {
-    final location = await getCurrentLocation();
-    if (location == null) return null;
-    await HiveHelper.saveTDataByKey(
-      kBoxSettings,
-      "location",
-      location.toJson(),
-    );
-    return location.toJson();
   }
 
   void getAthanTimes() async {
@@ -60,7 +47,7 @@ class AthanCubit extends Cubit<AthanState> {
     try {
       safeEmit(AthanLoading());
 
-      final cachedLocation = HiveHelper.getTDataByKey(kBoxSettings, "location");
+      final cachedLocation = await getLocalLocation();
       if (cachedLocation == null) return;
       _coordinates = Coordinates(
         cachedLocation["latitude"],

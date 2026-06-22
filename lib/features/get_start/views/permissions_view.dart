@@ -7,6 +7,7 @@ import "package:usage_stats/usage_stats.dart";
 
 import "../../../constant.dart";
 import "../../../core/theme/colors.dart";
+import "../../../core/utils/get_location.dart";
 
 class PermissionsView extends StatefulWidget {
   const PermissionsView({super.key});
@@ -48,6 +49,7 @@ class _PermissionsViewState extends State<PermissionsView> {
         onRequest: () async {
           var status = await Permission.location.status;
           if (!status.isGranted) status = await Permission.location.request();
+          getLocalLocation();
           return status.isGranted;
         },
       ),

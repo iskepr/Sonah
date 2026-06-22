@@ -28,13 +28,16 @@ class AzkarCubit extends Cubit<AzkarState> {
     final now = DateTime.now();
     final prayerTimes = athanState.prayerTimes;
 
+    debugPrint(
+      "Current time: $now, Fajr time: ${prayerTimes.fajr}, Active prayer: ${athanState.activePrayer}",
+    );
+
     List<dynamic>? targetAzkar;
     String targetTitle = "";
 
     // أذكار الاستيقاظ
     final DateTime wakeUpTime =
-        HiveHelper.getTDataByKey(kBoxSettings, "wakeUpTime") ??
-        prayerTimes.fajr;
+        HiveHelper.getDataByKey(kBoxSettings, "wakeUpTime") ?? prayerTimes.fajr;
 
     if (now.difference(wakeUpTime).inMinutes.abs() <= 30) {
       targetAzkar = AzkarConstants.wakingUp;

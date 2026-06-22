@@ -33,8 +33,9 @@ const Curve kCurveEaseInOut = Curves.easeInOut;
 const Curve kCurveEaseOutBack = Curves.easeOutBack;
 
 // Hive Boxes
-const String kBoxSystemApps = "box_system_apps";
 const String kBoxSettings = "box_settings";
+const String kBoxSystemApps = "box_system_apps";
+const String kBoxRoutine = "box_routine";
 
 // Routers
 const String kRouteHome = "/";

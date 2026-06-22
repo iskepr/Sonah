@@ -4,15 +4,15 @@ import "package:lucide_icons_flutter/lucide_icons.dart";
 import "../../../constant.dart";
 import "../../../core/extensions/extensions.dart";
 import "../../../core/theme/colors.dart";
-import "../models/task_entity.dart";
+import "../models/task_model.dart";
 
 class EditRoutineView extends StatelessWidget {
   const EditRoutineView({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final List<TaskEntity> tasks = [
-      TaskEntity(
+    final List<Task> tasks = [
+      Task(
         id: 1,
         title: "Task 1",
         description: "Description 1",
@@ -20,7 +20,7 @@ class EditRoutineView extends StatelessWidget {
         startTime: DateTime.now(),
         endTime: DateTime.now(),
       ),
-      TaskEntity(
+      Task(
         id: 1,
         title: "Task 2",
         description: "Description 2",
@@ -28,7 +28,7 @@ class EditRoutineView extends StatelessWidget {
         startTime: DateTime.now(),
         endTime: DateTime.now(),
       ),
-      TaskEntity(
+      Task(
         id: 1,
         title: "Task 3",
         description: "Description 3",

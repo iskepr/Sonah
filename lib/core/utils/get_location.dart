@@ -2,6 +2,8 @@ import "dart:async";
 import "package:geolocator/geolocator.dart";
 import "package:location/location.dart" as loc;
 
+import "../../constant.dart";
+import "../helpers/hive_helper.dart";
 import "platform_utils.dart";
 import "show_message.dart";
 
@@ -102,4 +104,24 @@ Future<Position?> getCurrentLocation({bool requestPermission = false}) async {
     showMessage("فشل في الحصول على الموقع");
     return null;
   }
+}
+
+Future<Map<String, dynamic>?> getLocalLocation() async {
+  const keyName = "location";
+
+  final localLocation = HiveHelper.getDataByKey<dynamic>(kBoxSettings, keyName);
+  if (localLocation != null) {
+    return Map<String, dynamic>.from(localLocation as Map);
+  }
+
+  final location = await getCurrentLocation();
+  if (location == null) return null;
+
+  await HiveHelper.saveDataByKey<Map<String, dynamic>>(
+    kBoxSettings,
+    keyName,
+    location.toJson(),
+  );
+
+  return location.toJson();
 }

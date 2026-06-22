@@ -28,13 +28,8 @@ class SystemAppsCubit extends Cubit<SystemAppsState> {
       return;
     }
 
-    final cachedData = HiveHelper.getListData(kBoxSystemApps);
-    if (cachedData.isNotEmpty) {
-      apps = cachedData.map((map) => ApplicationModel.fromMap(map)).toList();
-      safeEmit(SystemAppsLoaded(apps: apps, appsCount: apps.length));
-    } else {
-      safeEmit(SystemAppsLoading());
-    }
+    apps = HiveHelper.getListData<ApplicationModel>(kBoxSystemApps);
+    safeEmit(SystemAppsLoaded(apps: apps, appsCount: apps.length));
 
     final List<AppInfo> appsInfo = await FlutterDeviceApps.listApps(
       includeSystem: true,
@@ -77,7 +72,7 @@ class SystemAppsCubit extends Cubit<SystemAppsState> {
     apps = appsInfo.map((info) {
       final oldApp = apps.firstWhere(
         (element) => element.appInfo.packageName == info.packageName,
-        orElse: () => ApplicationModel(appInfo: info),
+        orElse: () => ApplicationModel(appInfoMap: appInfoToMap(info)),
       );
 
       final appDuration = usageMap[info.packageName] ?? Duration.zero;
@@ -93,18 +88,14 @@ class SystemAppsCubit extends Cubit<SystemAppsState> {
     _startListeningToChanges();
   }
 
-  void _saveToHive() {
-    final dataToSave = apps.map((app) => app.toMap()).toList();
-    HiveHelper.saveListData(kBoxSystemApps, dataToSave);
-  }
+  void _saveToHive() =>
+      HiveHelper.saveListData<ApplicationModel>(kBoxSystemApps, apps);
 
-  void _sortApps(List<ApplicationModel> list) {
-    list.sort(
-      (a, b) => (a.appInfo.appName ?? "").toLowerCase().compareTo(
-        (b.appInfo.appName ?? "").toLowerCase(),
-      ),
-    );
-  }
+  void _sortApps(List<ApplicationModel> list) => list.sort(
+    (a, b) => (a.appInfo.appName ?? "").toLowerCase().compareTo(
+      (b.appInfo.appName ?? "").toLowerCase(),
+    ),
+  );
 
   void _startListeningToChanges() {
     _appsSubscription = FlutterDeviceApps.appChanges.listen((
@@ -122,7 +113,7 @@ class SystemAppsCubit extends Cubit<SystemAppsState> {
           includeIcon: true,
         );
         if (newApp != null) {
-          apps.add(ApplicationModel(appInfo: newApp));
+          apps.add(ApplicationModel(appInfoMap: appInfoToMap(newApp)));
           _sortApps(apps);
           hasChanged = true;
         }
