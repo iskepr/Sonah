@@ -18,7 +18,7 @@ class ClockCubit extends Cubit<ClockState> {
   StreamSubscription? _subscription;
   int? _lastMinute;
 
-  static String get nowString => DateTime.now().timeOnly(showPeriod: false);
+  static String get nowString => DateTimeHelper.now.timeOnly(showPeriod: false);
 
   ClockCubit({required this.tickerService}) : super(ClockLoaded(nowString)) {
     _subscription = tickerService.timeStream.listen((now) {

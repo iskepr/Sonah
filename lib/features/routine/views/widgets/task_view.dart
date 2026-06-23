@@ -117,38 +117,36 @@ class TaskView extends StatelessWidget {
             const Divider(thickness: 0.5),
             Padding(
               padding: const EdgeInsetsDirectional.only(start: kSmallPadding),
-              child: Expanded(
-                child: ListView.builder(
-                  shrinkWrap: true,
-                  physics: const NeverScrollableScrollPhysics(),
-                  itemCount: task.subTasks.length,
-                  itemBuilder: (context, index) => Column(
-                    spacing: kSmallPadding,
-                    children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            task.subTasks[index].title,
-                            style: context.textTheme.bodyMedium?.copyWith(
-                              fontWeight: FontWeight.bold,
-                              color: context.colorScheme.onSurface,
-                            ),
+              child: ListView.builder(
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                itemCount: task.subTasks.length,
+                itemBuilder: (context, index) => Column(
+                  spacing: kSmallPadding,
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          task.subTasks[index].title,
+                          style: context.textTheme.bodyMedium?.copyWith(
+                            fontWeight: FontWeight.bold,
+                            color: context.colorScheme.onSurface,
                           ),
-                          _buildPriorityBadge(
-                            context,
-                            task.subTasks[index].priority,
-                          ),
-                        ],
-                      ),
-                      Text(
-                        task.subTasks[index].description!,
-                        style: context.textTheme.bodyMedium?.copyWith(
-                          color: context.colorScheme.onSurfaceVariant,
                         ),
+                        _buildPriorityBadge(
+                          context,
+                          task.subTasks[index].priority,
+                        ),
+                      ],
+                    ),
+                    Text(
+                      task.subTasks[index].description!,
+                      style: context.textTheme.bodyMedium?.copyWith(
+                        color: context.colorScheme.onSurfaceVariant,
                       ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
               ),
             ),

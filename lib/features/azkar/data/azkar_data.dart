@@ -17,7 +17,7 @@ extension ZekrExtension on AzkarType {
       case AzkarType.evening:
         return AzkarConstants.evening;
       case AzkarType.afterPrayer:
-        return AzkarConstants.afterPrayer;
+        return AzkarConstants.getPrayerAzkar(Prayer.fajr);
       case AzkarType.tasabeeh:
         return AzkarConstants.tasabeeh;
       case AzkarType.sleep:
@@ -386,95 +386,88 @@ abstract class AzkarConstants {
     ],
   );
 
-  static List<Zekr> getPrayerAzkar(
-    List<Zekr> azkar,
-    bool forPrayer, {
-    Prayer? prayer,
-  }) {
-    if (!forPrayer) return azkar;
-    return azkar
-        .where(
-          (z) =>
-              z.prayers == null ||
-              z.prayers!.isEmpty ||
-              z.prayers!.contains(prayer),
-        )
-        .toList();
+  static Azkar getPrayerAzkar(Prayer? prayer) {
+    return Azkar(
+      title: l10n.azkarAfterPrayer,
+      description:
+          "فَإِذَا قَضَيْتُمُ الصَّلَاةَ فَاذْكُرُوا اللَّهَ قِيَامًا وَقُعُودًا وَعَلَىٰ جُنُوبِكُمْ | النساء: 103",
+      type: AzkarType.afterPrayer,
+      data: _afterPrayer
+          .where(
+            (z) =>
+                z.prayers == null ||
+                z.prayers!.isEmpty ||
+                z.prayers!.contains(prayer),
+          )
+          .toList(),
+    );
   }
 
-  static final Azkar afterPrayer = Azkar(
-    title: l10n.azkarAfterPrayer,
-    description: "فَإِذَا قَضَيْتُمُ الصَّلَاةَ فَاذْكُرُوا اللَّهَ قِيَامًا وَقُعُودًا وَعَلَىٰ جُنُوبِكُمْ | النساء: 103",
-    type: AzkarType.afterPrayer,
-    data: [
-      Zekr(count: 3, content: "أَسْـتَغْفِرُ الله"),
-      Zekr(
-        count: 1,
-        content:
-            "اللّهُـمَّ أَنْـتَ السَّلامُ، وَمِـنْكَ السَّلام، تَبارَكْتَ يا ذا الجَـلالِ وَالإِكْـرام",
-      ),
-      Zekr(
-        count: 1,
-        content:
-            "لا إلهَ إلاّ اللّهُ وحدَهُ لا شريكَ لهُ، لهُ المُـلْكُ ولهُ الحَمْد، وهوَ على كلّ شَيءٍ قَدير، اللّهُـمَّ لا مانِعَ لِما أَعْطَـيْت، وَلا مُعْطِـيَ لِما مَنَـعْت، وَلا يَنْفَـعُ ذا الجَـدِّ مِنْـكَ الجَـد",
-      ),
-      Zekr(
-        count: 1,
-        content:
-            "لا إلهَ إلاّ اللّه, وحدَهُ لا شريكَ لهُ، لهُ الملكُ ولهُ الحَمد، وهوَ على كلّ شيءٍ قدير، لا حَـوْلَ وَلا قـوَّةَ إِلاّ بِاللهِ، لا إلهَ إلاّ اللّـه، وَلا نَعْـبُـدُ إِلاّ إيّـاه, لَهُ النِّعْـمَةُ وَلَهُ الفَضْل وَلَهُ الثَّـناءُ الحَـسَن، لا إلهَ إلاّ اللّهُ مخْلِصـينَ لَـهُ الدِّينَ وَلَوْ كَـرِهَ الكـافِرون",
-      ),
-      Zekr(
-        count: 33,
-        content: "سُـبْحانَ اللهِ، والحَمْـدُ لله، واللهُ أكْـبَر",
-      ),
-      Zekr(
-        count: 1,
-        content:
-            "لا إلهَ إلاّ اللّهُ وَحْـدَهُ لا شريكَ لهُ، لهُ الملكُ ولهُ الحَمْد، وهُوَ على كُلّ شَيءٍ قَـدير",
-      ),
+  static final _afterPrayer = [
+    Zekr(count: 3, content: "أَسْـتَغْفِرُ الله"),
+    Zekr(
+      count: 1,
+      content:
+          "اللّهُـمَّ أَنْـتَ السَّلامُ، وَمِـنْكَ السَّلام، تَبارَكْتَ يا ذا الجَـلالِ وَالإِكْـرام",
+    ),
+    Zekr(
+      count: 1,
+      content:
+          "لا إلهَ إلاّ اللّهُ وحدَهُ لا شريكَ لهُ، لهُ المُـلْكُ ولهُ الحَمْد، وهوَ على كلّ شَيءٍ قَدير، اللّهُـمَّ لا مانِعَ لِما أَعْطَـيْت، وَلا مُعْطِـيَ لِما مَنَـعْت، وَلا يَنْفَـعُ ذا الجَـدِّ مِنْـكَ الجَـد",
+    ),
+    Zekr(
+      count: 1,
+      content:
+          "لا إلهَ إلاّ اللّه, وحدَهُ لا شريكَ لهُ، لهُ الملكُ ولهُ الحَمد، وهوَ على كلّ شيءٍ قدير، لا حَـوْلَ وَلا قـوَّةَ إِلاّ بِاللهِ، لا إلهَ إلاّ اللّـه، وَلا نَعْـبُـدُ إِلاّ إيّـاه, لَهُ النِّعْـمَةُ وَلَهُ الفَضْل وَلَهُ الثَّـناءُ الحَـسَن، لا إلهَ إلاّ اللّهُ مخْلِصـينَ لَـهُ الدِّينَ وَلَوْ كَـرِهَ الكـافِرون",
+    ),
+    Zekr(count: 33, content: "سُـبْحانَ اللهِ، والحَمْـدُ لله، واللهُ أكْـبَر"),
+    Zekr(
+      count: 1,
+      content:
+          "لا إلهَ إلاّ اللّهُ وَحْـدَهُ لا شريكَ لهُ، لهُ الملكُ ولهُ الحَمْد، وهُوَ على كُلّ شَيءٍ قَـدير",
+    ),
 
-      Zekr(
-        count: 1,
-        description: "بَعْد السّلامِ من صَلاةِ الفَجْر",
-        prayers: [Prayer.fajr],
-        content:
-            "اللّهُـمَّ إِنِّـي أَسْأَلُـكَ عِلْمـاً نافِعـاً وَرِزْقـاً طَيِّـباً، وَعَمَـلاً مُتَقَـبَّلاً",
-      ),
+    Zekr(
+      count: 1,
+      description: "بَعْد السّلامِ من صَلاةِ الفَجْر",
+      prayers: [Prayer.fajr],
+      content:
+          "اللّهُـمَّ إِنِّـي أَسْأَلُـكَ عِلْمـاً نافِعـاً وَرِزْقـاً طَيِّـباً، وَعَمَـلاً مُتَقَـبَّلاً",
+    ),
 
-      Zekr(
-        count: 1,
-        content: "$suretAlIkhlas\n\n$suretAlFalaq\n\n$suretAlNas",
-        prayers: [Prayer.dhuhr, Prayer.asr, Prayer.isha],
-      ),
-      Zekr(
-        count: 3,
-        content: "$suretAlIkhlas\n\n$suretAlFalaq\n\n$suretAlNas",
-        prayers: [Prayer.fajr, Prayer.maghrib],
-      ),
+    Zekr(
+      count: 1,
+      content: "$suretAlIkhlas\n\n$suretAlFalaq\n\n$suretAlNas",
+      prayers: [Prayer.dhuhr, Prayer.asr, Prayer.isha],
+    ),
+    Zekr(
+      count: 3,
+      content: "$suretAlIkhlas\n\n$suretAlFalaq\n\n$suretAlNas",
+      prayers: [Prayer.fajr, Prayer.maghrib],
+    ),
 
-      Zekr(count: 1, content: ayaElKorse),
-      Zekr(
-        count: 10,
-        description: "عَشْر مَرّات بَعْدَ المَغْرِب وَالصّـبْح",
-        prayers: [Prayer.maghrib, Prayer.sunrise],
-        content:
-            "لا إلهَ إلاّ اللّهُ وحْـدَهُ لا شريكَ لهُ، لهُ المُلكُ ولهُ الحَمْد، يُحيـي وَيُمـيتُ وهُوَ على كُلّ شيءٍ قدير",
-      ),
+    Zekr(count: 1, content: ayaElKorse),
+    Zekr(
+      count: 10,
+      description: "عَشْر مَرّات بَعْدَ المَغْرِب وَالصّـبْح",
+      prayers: [Prayer.maghrib, Prayer.sunrise],
+      content:
+          "لا إلهَ إلاّ اللّهُ وحْـدَهُ لا شريكَ لهُ، لهُ المُلكُ ولهُ الحَمْد، يُحيـي وَيُمـيتُ وهُوَ على كُلّ شيءٍ قدير",
+    ),
 
-      Zekr(
-        count: 7,
-        description: "بعد صلاة الصبح والمغرب",
-        prayers: [Prayer.sunrise, Prayer.maghrib],
-        content: "اللَّهُمَّ أَجِرْنِي مِنْ النَّار",
-      ),
+    Zekr(
+      count: 7,
+      description: "بعد صلاة الصبح والمغرب",
+      prayers: [Prayer.sunrise, Prayer.maghrib],
+      content: "اللَّهُمَّ أَجِرْنِي مِنْ النَّار",
+    ),
 
-      Zekr(
-        count: 1,
-        content:
-            "اللَّهُمَّ أَعِنِّي عَلَى ذِكْرِكَ وَشُكْرِكَ وَحُسْنِ عِبَادَتِكَ",
-      ),
-    ],
-  );
+    Zekr(
+      count: 1,
+      content:
+          "اللَّهُمَّ أَعِنِّي عَلَى ذِكْرِكَ وَشُكْرِكَ وَحُسْنِ عِبَادَتِكَ",
+    ),
+  ];
 
   static final Azkar tasabeeh = Azkar(
     title: l10n.tasabeeh,

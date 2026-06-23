@@ -17,7 +17,7 @@ class AppIcon extends StatelessWidget {
         child: Image.memory(iconBytes!, width: kAppIconSize),
       );
     } else {
-      return const Icon(LucideIcons.circleAlert, size: kLargeFont * 1.8);
+      return const Icon(LucideIcons.circleAlert, size: kAppIconSize);
     }
   }
 }

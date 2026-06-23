@@ -127,7 +127,7 @@ class SystemAppsCubit extends Cubit<SystemAppsState> {
       packageName,
       (app) => app.copyWith(
         openCount: app.openCount + 1,
-        lastOpenTime: DateTime.now(),
+        lastOpenTime: DateTimeHelper.now,
       ),
     );
   }

@@ -4,7 +4,6 @@ import "package:flutter/material.dart";
 import "../../../constant.dart";
 import "../../../core/helpers/hive_helper.dart";
 import "../data/azkar_data.dart";
-import "zekr_model.dart";
 
 enum AzkarType { wakeUp, morning, evening, afterPrayer, tasabeeh, sleep }
 
@@ -42,6 +41,41 @@ class Azkar {
         return TimeOfDay.fromDateTime(prayerTimes.isha);
       default:
         return TimeOfDay.now();
+    }
+  }
+
+  bool isInRange(DateTime now, PrayerTimes prayerTimes) {
+    switch (type) {
+      // أذكار الاستيقاظ
+      case AzkarType.wakeUp:
+        final DateTime wakeUpTime =
+            HiveHelper.getDataByKey(kBoxSettings, "wakeUpTime") ??
+            prayerTimes.fajr.add(const Duration(minutes: -30));
+        return now.difference(wakeUpTime).inMinutes.abs() <= 30;
+
+      // أذكار الصباح - من الفجر الى الظهر
+      case AzkarType.morning:
+        final start = prayerTimes.fajr.add(const Duration(minutes: 30));
+        final end = prayerTimes.dhuhr;
+        return now.isAfter(start) && now.isBefore(end);
+
+      // أذكار المساء - من العصر الى المغرب
+      case AzkarType.evening:
+        final start = prayerTimes.asr.add(const Duration(minutes: 30));
+        final end = prayerTimes.isha;
+        return now.isAfter(start) && now.isBefore(end);
+
+      // أذكار النوم - من العشاء الى الفجر
+      case AzkarType.sleep:
+        final int nowMinutes = now.hour * 60 + now.minute;
+        final int ishaMinutes =
+            prayerTimes.isha.hour * 60 + prayerTimes.isha.minute;
+        final int fajrMinutes =
+            prayerTimes.fajr.hour * 60 + prayerTimes.fajr.minute;
+
+        return nowMinutes >= ishaMinutes || nowMinutes < fajrMinutes;
+      default:
+        return false;
     }
   }
 }

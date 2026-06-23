@@ -13,8 +13,8 @@ const double kMediumFont = 16;
 const double kLargeFont = 20;
 const double kSoLargeFont = 24;
 
-const double kAppIconSize = kLargeFont * 1.8;
-const double kAppIconRadius = kAppIconSize / 2;
+const double kAppIconSize = kLargeFont * 2;
+const double kAppIconRadius = kAppIconSize / 3;
 
 // Paddings
 const double kSmallPadding = 5;
@@ -53,7 +53,7 @@ final List<Prayer> kPrayers = Prayer.values
     .where((prayer) => prayer != Prayer.none && prayer != Prayer.sunrise)
     .toList();
 
-final List<AzkarType> kAzkar = AzkarType.values
+final List<AzkarType> kAzkarTyps = AzkarType.values
     .where((azkar) => azkar != AzkarType.tasabeeh)
     .toList();
 

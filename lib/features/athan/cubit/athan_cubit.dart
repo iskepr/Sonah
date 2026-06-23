@@ -58,7 +58,7 @@ class AthanCubit extends Cubit<AthanState> {
 
       _todayPrayers = PrayerTimes.today(_coordinates!, _params!);
 
-      _updateTick(DateTime.now());
+      _updateTick(DateTimeHelper.now);
     } catch (e) {
       if (!isClosed) showMessage(e.toString(), isError: true);
     }

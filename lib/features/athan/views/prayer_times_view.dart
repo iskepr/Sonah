@@ -2,6 +2,7 @@ import "package:adhan/adhan.dart";
 import "package:flutter/material.dart";
 import "package:flutter_bloc/flutter_bloc.dart";
 
+import "../../../core/extensions/date_time_extensions.dart";
 import "../cubit/athan_cubit.dart";
 import "widgets/single_prayer.dart";
 
@@ -48,7 +49,7 @@ class _PrayerTimesViewState extends State<PrayerTimesView> {
                     prayer: prayer,
                     time:
                         state.prayerTimes.timeForPrayer(prayer) ??
-                        DateTime.now(),
+                        DateTimeHelper.now,
                   );
                 },
               ),

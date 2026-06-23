@@ -1,5 +1,7 @@
 import "dart:async";
 
+import "../extensions/date_time_extensions.dart";
+
 class TickerService {
   StreamController<DateTime>? _controller;
   Timer? _timer;
@@ -20,7 +22,7 @@ class TickerService {
       if (_controller != null &&
           !_controller!.isClosed &&
           _controller!.hasListener) {
-        _controller!.add(DateTime.now());
+        _controller!.add(DateTimeHelper.now);
       }
     });
   }

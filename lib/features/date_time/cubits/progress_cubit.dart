@@ -25,7 +25,7 @@ class ProgressCubit extends Cubit<ProgressState> {
     getProgByMode(currentMode);
   }
 
-  DateTime get now => DateTime.now();
+  DateTime get now => DateTimeHelper.now;
 
   ProgressMode currentMode = ProgressMode.day;
 

@@ -3,6 +3,7 @@ import "package:hijri/hijri_calendar.dart";
 import "package:intl/intl.dart";
 
 import "../../../constant.dart";
+import "../../../core/extensions/date_time_extensions.dart";
 
 class FullDateView extends StatefulWidget {
   const FullDateView({super.key});
@@ -15,8 +16,6 @@ class _FullDateViewState extends State<FullDateView> {
   bool isHijri = true;
   @override
   Widget build(BuildContext context) {
-    final now = DateTime.now();
-
     HijriCalendar.setLocal(kAppLang);
     final today = HijriCalendar.now();
 
@@ -42,7 +41,7 @@ class _FullDateViewState extends State<FullDateView> {
                     today.hDay,
                     dateFormat,
                   )
-                : DateFormat(dateFormat).format(now),
+                : DateFormat(dateFormat).format(DateTimeHelper.now),
             style: const TextStyle(
               fontSize: kSmallFont,
               fontWeight: FontWeight.bold,

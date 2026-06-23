@@ -17,8 +17,9 @@ class EditRoutineView extends StatelessWidget {
     final List<Task> tasks = [
       ...List.generate(kPrayers.length, (index) {
         final prayer = kPrayers[index];
-        final prayerTime = prayerTimes.timeForPrayer(prayer) ?? DateTime.now();
-        final azkarAfterPrayer = AzkarConstants.afterPrayer;
+        final prayerTime =
+            prayerTimes.timeForPrayer(prayer) ?? DateTimeHelper.now;
+        final azkarAfterPrayer = AzkarConstants.getPrayerAzkar(prayer);
 
         return Task(
           id: index,
@@ -40,7 +41,7 @@ class EditRoutineView extends StatelessWidget {
           ],
         );
       }),
-      ...kAzkar.where((a) => a != AzkarType.afterPrayer).map((azkarType) {
+      ...kAzkarTyps.where((a) => a != AzkarType.afterPrayer).map((azkarType) {
         final azkar = azkarType.azkarByType;
         return Task(
           id: azkar.type.index + 200,

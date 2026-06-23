@@ -19,8 +19,8 @@ class MyMaterial extends StatelessWidget {
     this.height,
     this.width,
     this.whiteBG = true,
-    this.theme = MyMaterialTheme.glass,
-    this.hasShadow = true,
+    this.theme = MyMaterialTheme.solid,
+    this.hasShadow = false,
     this.hasBorder = true,
     this.color,
   });
@@ -115,11 +115,7 @@ class MyMaterial extends StatelessWidget {
     return LinearGradient(
       begin: Alignment.topLeft,
       end: Alignment.bottomRight,
-      colors: [
-        baseColor.withOpacity(0.3),
-        baseColor,
-        baseColor.withOpacity(0.3),
-      ],
+      colors: [baseColor, baseColor],
     );
   }
 

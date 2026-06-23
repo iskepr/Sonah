@@ -22,10 +22,7 @@ class ZekrWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(
-        horizontal: kLargePadding,
-        vertical: kSmallPadding,
-      ),
+      padding: const EdgeInsets.symmetric(horizontal: kLargePadding),
       child: InkWell(
         onTap: onPressed,
         onLongPress: () => Clipboard.setData(ClipboardData(text: zekr.content)),
@@ -34,6 +31,7 @@ class ZekrWidget extends StatelessWidget {
           width: double.infinity,
           borderRadius: BorderRadius.circular(kSmallBorderRadius),
           padding: const EdgeInsets.all(kLargePadding),
+          margin: EdgeInsets.zero,
           child: Stack(
             alignment: Alignment.center,
             children: [
