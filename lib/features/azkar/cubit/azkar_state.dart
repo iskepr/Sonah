@@ -1,3 +1,5 @@
+import "../data/azkar_data.dart";
+
 abstract class AzkarState {}
 
 class AzkarInitial extends AzkarState {}
@@ -5,15 +7,10 @@ class AzkarInitial extends AzkarState {}
 class AzkarLoading extends AzkarState {}
 
 class AzkarLoaded extends AzkarState {
-  final List<dynamic> azkarList;
+  final Azkar azkar;
   final Map<int, int> currentCounts;
-  final String title;
 
-  AzkarLoaded({
-    required this.azkarList,
-    required this.currentCounts,
-    required this.title,
-  });
+  AzkarLoaded({required this.azkar, required this.currentCounts});
 }
 
 class AzkarFinished extends AzkarState {}

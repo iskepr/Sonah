@@ -174,6 +174,11 @@ class S {
     return Intl.message('within', name: 'within', desc: '', args: []);
   }
 
+  /// `Prayer`
+  String get prayer {
+    return Intl.message('Prayer', name: 'prayer', desc: '', args: []);
+  }
+
   /// `Prayer Times`
   String get prayerTimes {
     return Intl.message(
@@ -219,54 +224,54 @@ class S {
     return Intl.message('Azkar', name: 'azkar', desc: '', args: []);
   }
 
-  /// `Morning Adhkar`
+  /// `Morning Azkar`
   String get azkarMorning {
     return Intl.message(
-      'Morning Adhkar',
+      'Morning Azkar',
       name: 'azkarMorning',
       desc: '',
       args: [],
     );
   }
 
-  /// `Evening Adhkar`
+  /// `Evening AzkarAzkar`
   String get azkarEvening {
     return Intl.message(
-      'Evening Adhkar',
+      'Evening AzkarAzkar',
       name: 'azkarEvening',
       desc: '',
       args: [],
     );
   }
 
-  /// `Adhkar after prayer`
+  /// `Azkar after prayer`
   String get azkarAfterPrayer {
     return Intl.message(
-      'Adhkar after prayer',
+      'Azkar after prayer',
       name: 'azkarAfterPrayer',
       desc: '',
       args: [],
     );
   }
 
-  /// `Adhkar before sleep`
-  String get azkarBeforeSleep {
+  /// `Azkar sleep`
+  String get azkarSleep {
+    return Intl.message('Azkar sleep', name: 'azkarSleep', desc: '', args: []);
+  }
+
+  /// `Azkar wakeUp`
+  String get azkarWakeUp {
     return Intl.message(
-      'Adhkar before sleep',
-      name: 'azkarBeforeSleep',
+      'Azkar wakeUp',
+      name: 'azkarWakeUp',
       desc: '',
       args: [],
     );
   }
 
-  /// `Adhkar after wakeUp`
-  String get azkarAfterWakeUp {
-    return Intl.message(
-      'Adhkar after wakeUp',
-      name: 'azkarAfterWakeUp',
-      desc: '',
-      args: [],
-    );
+  /// `Tasabeeh`
+  String get tasabeeh {
+    return Intl.message('Tasabeeh', name: 'tasabeeh', desc: '', args: []);
   }
 
   /// `May Allah accept our good deeds and yours!`

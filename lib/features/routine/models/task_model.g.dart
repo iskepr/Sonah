@@ -25,8 +25,8 @@ class TaskAdapter extends TypeAdapter<Task> {
       mode: fields[5] as TaskMode,
       appId: (fields[6] as List?)?.cast<String>(),
       days: (fields[7] as List?)?.cast<String>(),
-      startTime: fields[8] as DateTime,
-      endTime: fields[9] as DateTime?,
+      startTime: fields[8] as TimeOfDay,
+      endTime: fields[9] as TimeOfDay?,
       subTasks: (fields[10] as List).cast<Task>(),
     );
   }

@@ -3,40 +3,57 @@ import "package:lucide_icons_flutter/lucide_icons.dart";
 
 import "../../../constant.dart";
 import "../../../core/extensions/extensions.dart";
-import "../../../core/theme/colors.dart";
+import "../../athan/extensions/athan_extenstion.dart";
+import "../../azkar/data/azkar_data.dart";
 import "../models/task_model.dart";
+import "widgets/task_view.dart";
 
 class EditRoutineView extends StatelessWidget {
   const EditRoutineView({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final prayerTimes = context.prayerTimes!;
     final List<Task> tasks = [
-      Task(
-        id: 1,
-        title: "Task 1",
-        description: "Description 1",
-        priority: TaskPriority.low,
-        startTime: DateTime.now(),
-        endTime: DateTime.now(),
-      ),
-      Task(
-        id: 1,
-        title: "Task 2",
-        description: "Description 2",
-        priority: TaskPriority.medium,
-        startTime: DateTime.now(),
-        endTime: DateTime.now(),
-      ),
-      Task(
-        id: 1,
-        title: "Task 3",
-        description: "Description 3",
-        priority: TaskPriority.high,
-        startTime: DateTime.now(),
-        endTime: DateTime.now(),
-      ),
+      ...List.generate(kPrayers.length, (index) {
+        final prayer = kPrayers[index];
+        final prayerTime = prayerTimes.timeForPrayer(prayer) ?? DateTime.now();
+        final azkarAfterPrayer = AzkarConstants.afterPrayer;
+
+        return Task(
+          id: index,
+          title: "${l10n.prayer.removeEl} ${prayer.prayerName}",
+          description:
+              "إِنَّ الصَّلَاةَ كَانَتْ عَلَى الْمُؤْمِنِينَ كِتَابًا مَوْقُوتًا | النساء: 103",
+          priority: TaskPriority.onTime,
+          mode: TaskMode.prayer,
+          startTime: TimeOfDay.fromDateTime(prayerTime),
+          subTasks: [
+            Task(
+              id: index + 100,
+              title: azkarAfterPrayer.title,
+              description: azkarAfterPrayer.description,
+              startTime: TimeOfDay.fromDateTime(
+                prayerTime.add(const Duration(minutes: 10)),
+              ),
+            ),
+          ],
+        );
+      }),
+      ...kAzkar.where((a) => a != AzkarType.afterPrayer).map((azkarType) {
+        final azkar = azkarType.azkarByType;
+        return Task(
+          id: azkar.type.index + 200,
+          title: azkar.title,
+          description: azkar.description,
+          priority: TaskPriority.high,
+          mode: TaskMode.normal,
+          startTime: azkar.getTime(prayerTimes),
+        );
+      }),
     ];
+    tasks.sort((a, b) => a.startTime.compareTo(b.startTime));
+
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
@@ -46,35 +63,10 @@ class EditRoutineView extends StatelessWidget {
       ),
       body: Column(
         children: [
-          const Text("EditRoutineView"),
           Expanded(
             child: ListView.builder(
               itemCount: tasks.length,
-              itemBuilder: (context, index) {
-                tasks.sort((a, b) => a.startTime.compareTo(b.startTime));
-                final task = tasks[index];
-                return Card(
-                  color: context.colorScheme.primaryContainer,
-                  child: Column(
-                    children: [
-                      Row(
-                        children: [
-                          Text(task.title),
-                          Text(task.description ?? ""),
-                          Text(task.priority.name),
-                        ],
-                      ),
-                      Row(
-                        spacing: kSmallPadding,
-                        children: [
-                          Text(task.startTime.timeOnly()),
-                          Text(task.endTime?.timeOnly() ?? ""),
-                        ],
-                      ),
-                    ],
-                  ),
-                );
-              },
+              itemBuilder: (context, index) => TaskView(task: tasks[index]),
             ),
           ),
         ],

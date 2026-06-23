@@ -7,6 +7,7 @@ import "../../features/get_start/views/permissions_view.dart";
 import "../../features/home/views/home_view.dart";
 import "../../features/routine/cubit/routine_cubit.dart";
 import "../../features/routine/views/edit_routine_view.dart";
+import "../utils/platform_utils.dart";
 
 CustomTransitionPage pageTransition<T>({
   required BuildContext context,
@@ -38,7 +39,9 @@ CustomTransitionPage pageTransition<T>({
 bool isFirstOpen = true;
 
 final appRouter = GoRouter(
-  initialLocation: isFirstOpen ? kRouteGetStarted : kRouteHome,
+  initialLocation: (isFirstOpen && PlatformUtils.isAndroid)
+      ? kRouteGetStarted
+      : kRouteHome,
 
   navigatorKey: kNavigatorKey,
 
@@ -55,9 +58,11 @@ final appRouter = GoRouter(
         return pageTransition(
           context: context,
           state: state,
-          child: const Scaffold(
-            backgroundColor: Colors.transparent,
-            body: HomeView(),
+          child: Scaffold(
+            backgroundColor: PlatformUtils.isAndroid
+                ? Colors.transparent
+                : null,
+            body: const HomeView(),
           ),
         );
       },

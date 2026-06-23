@@ -28,7 +28,7 @@ class ApplicationModelAdapter extends TypeAdapter<ApplicationModel> {
   @override
   void write(BinaryWriter writer, ApplicationModel obj) {
     writer
-      ..writeByte(6)
+      ..writeByte(7)
       ..writeByte(0)
       ..write(obj.appInfoMap)
       ..writeByte(1)
@@ -40,7 +40,9 @@ class ApplicationModelAdapter extends TypeAdapter<ApplicationModel> {
       ..writeByte(4)
       ..write(obj.lastOpenTime)
       ..writeByte(5)
-      ..write(obj.usageTimeInMillis);
+      ..write(obj.usageTimeInMillis)
+      ..writeByte(7)
+      ..write(obj.usageTimeLimitInMillis);
   }
 
   @override

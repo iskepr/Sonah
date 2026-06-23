@@ -15,7 +15,7 @@ class ZekrWidget extends StatelessWidget {
     required this.zekr,
     required this.currentCount,
   });
-  final ZekrEntity zekr;
+  final Zekr zekr;
   final int currentCount;
   final VoidCallback onPressed;
 
@@ -31,7 +31,6 @@ class ZekrWidget extends StatelessWidget {
         onLongPress: () => Clipboard.setData(ClipboardData(text: zekr.content)),
         borderRadius: BorderRadius.circular(kSmallBorderRadius),
         child: MyMaterial(
-          theme: MyMaterialTheme.glass,
           width: double.infinity,
           borderRadius: BorderRadius.circular(kSmallBorderRadius),
           padding: const EdgeInsets.all(kLargePadding),

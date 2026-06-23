@@ -1,3 +1,4 @@
+import "package:flutter/material.dart";
 import "package:intl/intl.dart";
 
 extension DateTimeFormat on DateTime {
@@ -50,6 +51,14 @@ extension DateTimeFormat on DateTime {
       return timeOnly();
     }
     return fullDateTime;
+  }
+}
+
+extension TimeOfDayExtension on TimeOfDay {
+  String timeOnly({bool showPeriod = true, bool isArabic = true}) {
+    return DateTime.now()
+        .copyWith(hour: hour, minute: minute)
+        .timeOnly(showPeriod: showPeriod, isArabic: isArabic);
   }
 }
 

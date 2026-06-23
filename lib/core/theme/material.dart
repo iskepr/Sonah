@@ -19,10 +19,10 @@ class MyMaterial extends StatelessWidget {
     this.height,
     this.width,
     this.whiteBG = true,
-    this.theme = MyMaterialTheme.solid,
+    this.theme = MyMaterialTheme.glass,
     this.hasShadow = true,
     this.hasBorder = true,
-    this.bg,
+    this.color,
   });
 
   final Widget child;
@@ -36,7 +36,7 @@ class MyMaterial extends StatelessWidget {
   final MyMaterialTheme theme;
   final bool hasShadow;
   final bool hasBorder;
-  final Color? bg;
+  final Color? color;
 
   @override
   Widget build(BuildContext context) {
@@ -44,8 +44,8 @@ class MyMaterial extends StatelessWidget {
 
     final decoration = BoxDecoration(
       borderRadius: borderRadius,
-      gradient: bg != null ? null : _buildGradient(context, isGlass),
-      color: bg,
+      gradient: color != null ? null : _buildGradient(context, isGlass),
+      color: color,
       border: hasBorder ? _buildBorder(context) : null,
       boxShadow: (hasShadow && !isGlass)
           ? [
@@ -99,26 +99,27 @@ class MyMaterial extends StatelessWidget {
   }
 
   Gradient _buildGradient(BuildContext context, bool isGlass) {
+    final baseColor = color ?? context.colorScheme.primaryContainer;
     if (isGlass) {
       return LinearGradient(
         begin: Alignment.topLeft,
         end: Alignment.bottomRight,
         colors: [
-          context.colorScheme.primaryContainer.withOpacity(0.3),
+          baseColor.withOpacity(0.3),
           Colors.transparent,
-          context.colorScheme.primaryContainer.withOpacity(0.3),
+          baseColor.withOpacity(0.3),
         ],
       );
     }
 
-    final Color baseColor = whiteBG
-        ? context.colorScheme.primaryContainer.withOpacity(0.9)
-        : context.background;
     return LinearGradient(
       begin: Alignment.topLeft,
       end: Alignment.bottomRight,
-      colors: [baseColor, baseColor],
-      stops: const [0, 1],
+      colors: [
+        baseColor.withOpacity(0.3),
+        baseColor,
+        baseColor.withOpacity(0.3),
+      ],
     );
   }
 

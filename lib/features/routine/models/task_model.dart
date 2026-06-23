@@ -1,3 +1,4 @@
+import "package:flutter/material.dart";
 import "package:hive_flutter/hive_flutter.dart";
 part "task_model.g.dart";
 
@@ -68,10 +69,10 @@ class Task {
   final List<String>? days; // [1,3,5,7] - لو ب null هيكون لمرة واده ولا يتكرر
 
   @HiveField(8)
-  final DateTime startTime;
+  final TimeOfDay startTime;
 
   @HiveField(9)
-  final DateTime? endTime;
+  final TimeOfDay? endTime;
 
   @HiveField(10)
   final List<Task> subTasks;

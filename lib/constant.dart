@@ -1,5 +1,7 @@
+import "package:adhan/adhan.dart";
 import "package:flutter/material.dart";
 
+import "features/azkar/data/azkar_data.dart";
 import "generated/l10n.dart";
 
 const String kMainFont = "MiSans";
@@ -45,6 +47,17 @@ const String kBoxRoutine = "box_routine";
 const String kRouteHome = "/";
 const String kRouteGetStarted = "/get_started";
 const String kRouteRoutine = "/routine";
+
+// prayers
+final List<Prayer> kPrayers = Prayer.values
+    .where((prayer) => prayer != Prayer.none && prayer != Prayer.sunrise)
+    .toList();
+
+final List<AzkarType> kAzkar = AzkarType.values
+    .where((azkar) => azkar != AzkarType.tasabeeh)
+    .toList();
+
+const kPrayerDuration = Duration(minutes: 30);
 
 // Globals
 const kAppLang = "ar";

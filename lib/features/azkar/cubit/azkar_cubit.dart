@@ -42,8 +42,7 @@ class AzkarCubit extends Cubit<AzkarState> {
   void determineAzkar(AthanLoaded athanState, DateTime now) {
     final prayerTimes = athanState.prayerTimes;
 
-    List<dynamic>? targetAzkar;
-    String targetTitle = "";
+    Azkar? targetAzkar;
 
     final int nowMinutes = now.hour * 60 + now.minute;
     final int ishaMinutes =
@@ -57,60 +56,50 @@ class AzkarCubit extends Cubit<AzkarState> {
 
     if (now.difference(wakeUpTime).inMinutes.abs() <= 30) {
       targetAzkar = AzkarConstants.wakingUp;
-      targetTitle = l10n.azkarAfterWakeUp;
     }
     // أذكار بعد الصلاة
     else if (athanState.activePrayer != Prayer.none) {
-      final filteredAzker = AzkarConstants.afterPrayer
-          .where(
-            (z) =>
-                z.prayers == null ||
-                z.prayers!.isEmpty ||
-                z.prayers!.contains(athanState.activePrayer),
-          )
-          .toList();
-
-      if (filteredAzker.isNotEmpty) {
-        targetAzkar = filteredAzker;
-        targetTitle = l10n.azkarAfterPrayer;
-      }
+      targetAzkar = AzkarConstants.afterPrayer;
     }
     // أذكار الصباح - من الفجر الى الظهر
     else if (now.isAfter(prayerTimes.fajr) &&
         now.isBefore(prayerTimes.dhuhr.add(const Duration(hours: 1)))) {
       targetAzkar = AzkarConstants.morning;
-      targetTitle = l10n.azkarMorning;
     }
     // أذكار المساء - من العصر الى المغرب
     else if (now.isAfter(prayerTimes.asr) &&
         now.isBefore(prayerTimes.maghrib)) {
       targetAzkar = AzkarConstants.evening;
-      targetTitle = l10n.azkarEvening;
     }
     // أذكار النوم - من العشاء الى الفجر
     else if (nowMinutes >= ishaMinutes || nowMinutes < fajrMinutes) {
-      targetAzkar = AzkarConstants.beforeSleep;
-      targetTitle = l10n.azkarBeforeSleep;
+      targetAzkar = AzkarConstants.sleep;
     }
 
-    if (targetAzkar == null || targetTitle.isEmpty) {
+    if (targetAzkar == null) {
       if (state is! AzkarInitial) safeEmit(AzkarInitial());
       return;
     }
-    if (state is AzkarLoaded && (state as AzkarLoaded).title == targetTitle) {
+    if (state is AzkarLoaded &&
+        (state as AzkarLoaded).azkar.title == targetAzkar.title) {
       return;
     }
 
     safeEmit(AzkarLoading());
-    _initializeAzkar(targetAzkar, targetTitle);
+    _initializeAzkar(targetAzkar);
   }
 
-  void _initializeAzkar(List<dynamic> list, String title) {
+  void _initializeAzkar(Azkar azkar) {
+    final list = AzkarConstants.getPrayerAzkar(
+      azkar.data,
+      azkar.type == AzkarType.afterPrayer,
+      prayer: _lastActivePrayer,
+    );
     final Map<int, int> counts = {};
     for (int i = 0; i < list.length; i++) {
       counts[i] = list[i].count;
     }
-    safeEmit(AzkarLoaded(azkarList: list, currentCounts: counts, title: title));
+    safeEmit(AzkarLoaded(azkar: azkar, currentCounts: counts));
   }
 
   void decrementCounter(int index, VoidCallback onPageNext) {
@@ -123,14 +112,10 @@ class AzkarCubit extends Cubit<AzkarState> {
     if (updatedCounts[index]! > 1) {
       updatedCounts[index] = updatedCounts[index]! - 1;
       safeEmit(
-        AzkarLoaded(
-          azkarList: currentState.azkarList,
-          currentCounts: updatedCounts,
-          title: currentState.title,
-        ),
+        AzkarLoaded(azkar: currentState.azkar, currentCounts: updatedCounts),
       );
     } else {
-      if (index < currentState.azkarList.length - 1) {
+      if (index < currentState.azkar.data.length - 1) {
         onPageNext();
       } else {
         safeEmit(AzkarFinished());

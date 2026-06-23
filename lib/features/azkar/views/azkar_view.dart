@@ -41,11 +41,11 @@ class _AzkarViewState extends State<AzkarView> {
           if (state is AzkarFinished) showMessage(l10n.messageAfterFinishAzkar);
         },
         builder: (context, state) {
-          if (state is! AzkarLoaded || state.azkarList.isEmpty) {
+          if (state is! AzkarLoaded || state.azkar.data.isEmpty) {
             return const SizedBox.shrink();
           }
 
-          if (_currentIndex >= state.azkarList.length) _currentIndex = 0;
+          if (_currentIndex >= state.azkar.data.length) _currentIndex = 0;
           return Column(
             spacing: kSmallPadding,
             mainAxisSize: MainAxisSize.min,
@@ -61,7 +61,7 @@ class _AzkarViewState extends State<AzkarView> {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     Text(
-                      state.title,
+                      state.azkar.title,
                       style: TextStyle(
                         fontWeight: FontWeight.bold,
                         fontSize: kMediumFont,
@@ -69,7 +69,7 @@ class _AzkarViewState extends State<AzkarView> {
                       ),
                     ),
                     Text(
-                      "${_currentIndex + 1}/${state.azkarList.length}",
+                      "${_currentIndex + 1}/${state.azkar.data.length}",
                       style: const TextStyle(
                         fontSize: kSoSmallFont,
                         color: Colors.grey,
@@ -80,11 +80,11 @@ class _AzkarViewState extends State<AzkarView> {
               ),
 
               ExpandablePageView.builder(
-                itemCount: state.azkarList.length,
+                itemCount: state.azkar.data.length,
                 controller: _pageController,
                 onPageChanged: (index) => setState(() => _currentIndex = index),
                 itemBuilder: (context, index) {
-                  final zekr = state.azkarList[index];
+                  final zekr = state.azkar.data[index];
                   final currentCount = state.currentCounts[index] ?? 0;
 
                   return ZekrWidget(
@@ -92,7 +92,7 @@ class _AzkarViewState extends State<AzkarView> {
                     currentCount: currentCount,
                     onPressed: () {
                       context.read<AzkarCubit>().decrementCounter(index, () {
-                        if (_currentIndex < state.azkarList.length - 1) {
+                        if (_currentIndex < state.azkar.data.length - 1) {
                           _pageController.animateToPage(
                             _currentIndex + 1,
                             duration: const Duration(milliseconds: 300),

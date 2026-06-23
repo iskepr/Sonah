@@ -1,8 +1,10 @@
 import "package:adhan/adhan.dart";
 import "package:flutter/material.dart";
+import "package:flutter_bloc/flutter_bloc.dart";
 import "package:lucide_icons_flutter/lucide_icons.dart";
 
 import "../../../constant.dart";
+import "../cubit/athan_cubit.dart";
 
 extension AthanExtension on Prayer {
   String get prayerName {
@@ -41,5 +43,15 @@ extension AthanExtension on Prayer {
       default:
         return LucideIcons.sun;
     }
+  }
+}
+
+extension AthanContextExtension on BuildContext {
+  AthanState get athanState => watch<AthanCubit>().state;
+
+  PrayerTimes? get prayerTimes {
+    final state = athanState;
+    if (state is AthanLoaded) return state.prayerTimes;
+    return null;
   }
 }

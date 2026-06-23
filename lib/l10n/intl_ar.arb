@@ -23,6 +23,7 @@
     "week": "أسبوع",
     "day": "يوم",
     "within": "خلال",
+    "prayer": "الصلاة",
     "prayerTimes": "مواعيد الصلاة",
     "fajr": "الفجر",
     "sunrise": "الشروق",
@@ -34,7 +35,8 @@
     "azkarMorning":"أذكار الصباح",
     "azkarEvening":"أذكار المساء",
     "azkarAfterPrayer":"أذكار بعد الصلاة",
-    "azkarBeforeSleep":"أذكار قبل النوم",
-    "azkarAfterWakeUp":"أذكار بعد الاستيقاظ",
+    "azkarSleep":"أذكار النوم",
+    "azkarWakeUp":"أذكار الاستيقاظ",
+    "tasabeeh":"تسبيح",
     "messageAfterFinishAzkar":"تقبل الله منا ومنكم صالح الأعمال!"
 }
