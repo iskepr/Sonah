@@ -60,13 +60,22 @@ class _AzkarViewState extends State<AzkarView> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    Text(
-                      state.azkar.title,
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: kMediumFont,
-                        color: context.colorScheme.primary,
-                      ),
+                    Row(
+                      spacing: kSmallPadding,
+                      children: [
+                        if (state.azkar.icon != null)
+                          Icon(
+                            state.azkar.icon,
+                            color: context.colorScheme.primary,
+                          ),
+                        Text(
+                          state.azkar.title,
+                          style: const TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: kMediumFont,
+                          ),
+                        ),
+                      ],
                     ),
                     Text(
                       "${_currentIndex + 1}/${state.azkar.data.length}",

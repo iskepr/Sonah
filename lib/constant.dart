@@ -57,7 +57,7 @@ final List<AzkarType> kAzkarTyps = AzkarType.values
     .where((azkar) => azkar != AzkarType.tasabeeh)
     .toList();
 
-const kPrayerDuration = Duration(minutes: 30);
+const kPrayerDurationInMinutes = 30;
 
 // Globals
 const kAppLang = "ar";

@@ -17,30 +17,31 @@ class TaskAdapter extends TypeAdapter<Task> {
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
     return Task(
-      id: fields[0] as int,
       title: fields[1] as String,
       description: fields[2] as String?,
+      icon: fields[12] as IconData?,
       type: fields[3] as TaskType,
       priority: fields[4] as TaskPriority,
       mode: fields[5] as TaskMode,
-      appId: (fields[6] as List?)?.cast<String>(),
+      appsIds: (fields[6] as List?)?.cast<String>(),
       days: (fields[7] as List?)?.cast<String>(),
       startTime: fields[8] as TimeOfDay,
       endTime: fields[9] as TimeOfDay?,
-      subTasks: (fields[10] as List).cast<Task>(),
+      durationInMinutes: fields[10] as int?,
+      subTasks: (fields[11] as List).cast<Task>(),
     );
   }
 
   @override
   void write(BinaryWriter writer, Task obj) {
     writer
-      ..writeByte(11)
-      ..writeByte(0)
-      ..write(obj.id)
+      ..writeByte(12)
       ..writeByte(1)
       ..write(obj.title)
       ..writeByte(2)
       ..write(obj.description)
+      ..writeByte(12)
+      ..write(obj.icon)
       ..writeByte(3)
       ..write(obj.type)
       ..writeByte(4)
@@ -48,7 +49,7 @@ class TaskAdapter extends TypeAdapter<Task> {
       ..writeByte(5)
       ..write(obj.mode)
       ..writeByte(6)
-      ..write(obj.appId)
+      ..write(obj.appsIds)
       ..writeByte(7)
       ..write(obj.days)
       ..writeByte(8)
@@ -56,6 +57,8 @@ class TaskAdapter extends TypeAdapter<Task> {
       ..writeByte(9)
       ..write(obj.endTime)
       ..writeByte(10)
+      ..write(obj.durationInMinutes)
+      ..writeByte(11)
       ..write(obj.subTasks);
   }
 

@@ -47,7 +47,7 @@ extension AthanExtension on Prayer {
 }
 
 extension AthanContextExtension on BuildContext {
-  AthanState get athanState => watch<AthanCubit>().state;
+  AthanState get athanState => read<AthanCubit>().state;
 
   PrayerTimes? get prayerTimes {
     final state = athanState;

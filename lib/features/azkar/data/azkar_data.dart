@@ -1,4 +1,5 @@
 import "package:adhan/adhan.dart";
+import "package:lucide_icons_flutter/lucide_icons.dart";
 
 import "../../../constant.dart";
 import "../models/azkar_model.dart";
@@ -62,6 +63,7 @@ abstract class AzkarConstants {
 
   static Azkar wakingUp = Azkar(
     title: l10n.azkarWakeUp,
+    icon: LucideIcons.alarmClock,
     type: AzkarType.wakeUp,
     data: [
       Zekr(
@@ -100,6 +102,7 @@ abstract class AzkarConstants {
 
   static final Azkar morning = Azkar(
     title: l10n.azkarMorning,
+    icon: LucideIcons.sun,
     type: AzkarType.morning,
     data: [
       ...defaultAzkar,
@@ -244,6 +247,7 @@ abstract class AzkarConstants {
 
   static final Azkar evening = Azkar(
     title: l10n.azkarEvening,
+    icon: LucideIcons.moon,
     type: AzkarType.evening,
     data: [
       ...defaultAzkar,
@@ -569,6 +573,7 @@ abstract class AzkarConstants {
 
   static final Azkar sleep = Azkar(
     title: l10n.azkarSleep,
+    icon: LucideIcons.bed,
     type: AzkarType.sleep,
     data: [
       Zekr(

@@ -169,6 +169,21 @@ class S {
     return Intl.message('Day', name: 'day', desc: '', args: []);
   }
 
+  /// `Hour`
+  String get hour {
+    return Intl.message('Hour', name: 'hour', desc: '', args: []);
+  }
+
+  /// `Minute`
+  String get minute {
+    return Intl.message('Minute', name: 'minute', desc: '', args: []);
+  }
+
+  /// `Second`
+  String get second {
+    return Intl.message('Second', name: 'second', desc: '', args: []);
+  }
+
   /// `within`
   String get within {
     return Intl.message('within', name: 'within', desc: '', args: []);

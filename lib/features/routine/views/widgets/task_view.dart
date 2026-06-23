@@ -26,12 +26,24 @@ class TaskView extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Expanded(
-                child: Text(
-                  task.title,
-                  style: context.textTheme.titleMedium?.copyWith(
-                    fontWeight: FontWeight.bold,
-                    color: context.colorScheme.onSurface,
-                  ),
+                child: Row(
+                  spacing: kSmallPadding,
+                  children: [
+                    if (task.icon != null)
+                      Icon(
+                        task.icon,
+                        size: kMediumFont * 1.5,
+                        color: task.priority.color,
+                      ),
+                    Text(
+                      task.title,
+                      style: TextStyle(
+                        fontSize: kMediumFont,
+                        fontWeight: FontWeight.bold,
+                        color: context.colorScheme.onSurface,
+                      ),
+                    ),
+                  ],
                 ),
               ),
               const SizedBox(width: 8),
@@ -55,7 +67,7 @@ class TaskView extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               // الوقت
-              Row(
+              Wrap(
                 children: [
                   Icon(
                     LucideIcons.clock,
@@ -70,19 +82,24 @@ class TaskView extends StatelessWidget {
                       color: context.colorScheme.onSurface,
                     ),
                   ),
-                  if (task.endTime != null) ...[
-                    Text(
-                      "  ←  ",
-                      style: TextStyle(color: context.colorScheme.outline),
+                  Text(
+                    "  ←  ",
+                    style: TextStyle(color: context.colorScheme.outline),
+                  ),
+                  Text(
+                    task.endTime.timeOnly(),
+                    style: context.textTheme.bodySmall?.copyWith(
+                      fontWeight: FontWeight.bold,
+                      color: context.colorScheme.onSurface,
                     ),
-                    Text(
-                      task.endTime!.timeOnly(),
-                      style: context.textTheme.bodySmall?.copyWith(
-                        fontWeight: FontWeight.bold,
-                        color: context.colorScheme.onSurface,
-                      ),
+                  ),
+                  Text(
+                    " ~${task.duration.format}",
+                    style: TextStyle(
+                      color: context.colorScheme.outline,
+                      fontStyle: FontStyle.italic,
                     ),
-                  ],
+                  ),
                 ],
               ),
 
@@ -127,12 +144,29 @@ class TaskView extends StatelessWidget {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text(
-                          task.subTasks[index].title,
-                          style: context.textTheme.bodyMedium?.copyWith(
-                            fontWeight: FontWeight.bold,
-                            color: context.colorScheme.onSurface,
-                          ),
+                        Row(
+                          children: [
+                            if (task.subTasks[index].icon != null)
+                              Icon(
+                                task.subTasks[index].icon,
+                                size: kMediumFont * 1.5,
+                                color: task.subTasks[index].priority.color,
+                              ),
+                            Text(
+                              task.subTasks[index].title,
+                              style: context.textTheme.bodyMedium?.copyWith(
+                                fontWeight: FontWeight.bold,
+                                color: context.colorScheme.onSurface,
+                              ),
+                            ),
+                            Text(
+                              " ~${task.subTasks[index].duration.format}",
+                              style: TextStyle(
+                                color: context.colorScheme.outline,
+                                fontStyle: FontStyle.italic,
+                              ),
+                            ),
+                          ],
                         ),
                         _buildPriorityBadge(
                           context,
@@ -157,32 +191,14 @@ class TaskView extends StatelessWidget {
   }
 
   Widget _buildPriorityBadge(BuildContext context, TaskPriority priority) {
-    Color baseColor;
-    String label;
-
-    switch (priority) {
-      case TaskPriority.high:
-        baseColor = Colors.deepOrange;
-        label = "هام";
-      case TaskPriority.medium:
-        baseColor = Colors.orange;
-        label = "متوسط";
-      case TaskPriority.low:
-        baseColor = Colors.green;
-        label = "منخفض";
-      case TaskPriority.onTime:
-        baseColor = Colors.red;
-        label = "على الوقت";
-    }
-
     return MyMaterial(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-      color: baseColor.withOpacity(0.12),
+      color: priority.color.withOpacity(0.12),
 
       child: Text(
-        label,
+        priority.label,
         style: context.textTheme.labelSmall?.copyWith(
-          color: baseColor,
+          color: priority.color,
           fontWeight: FontWeight.bold,
         ),
       ),

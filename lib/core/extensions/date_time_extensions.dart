@@ -1,6 +1,8 @@
 import "package:flutter/material.dart";
 import "package:intl/intl.dart";
 
+import "../../constant.dart";
+
 extension DateTimeFormat on DateTime {
   String timeOnly({bool showPeriod = true, bool isArabic = true}) {
     final e = isUtc ? toLocal() : this;
@@ -59,6 +61,21 @@ extension TimeOfDayExtension on TimeOfDay {
     return DateTime.now()
         .copyWith(hour: hour, minute: minute)
         .timeOnly(showPeriod: showPeriod, isArabic: isArabic);
+  }
+
+  DateTime get toDateTime =>
+      DateTime.now().copyWith(hour: hour, minute: minute);
+}
+
+extension DateTimeExtension on DateTime {
+  TimeOfDay get toTimeOfDay => TimeOfDay.fromDateTime(this);
+}
+
+extension DurationExtension on Duration {
+  String get format {
+    if (inHours > 0) return "$inHours ${l10n.hour}";
+    if (inMinutes > 0) return "$inMinutes ${l10n.minute}";
+    return "$inSeconds ${l10n.second}";
   }
 }
 
