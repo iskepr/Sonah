@@ -12,6 +12,7 @@ import "features/athan/cubit/athan_cubit.dart";
 import "features/battery/cubit/battery_cubit.dart";
 import "features/date_time/cubits/clock_cubit.dart";
 import "features/date_time/cubits/progress_cubit.dart";
+import "features/routine/cubit/routine_cubit.dart";
 import "features/search/cubit/search_cubit.dart";
 import "features/system_apps/cubit/system_apps_cubit.dart";
 import "features/system_apps/repo/system_apps_repository.dart";
@@ -56,6 +57,7 @@ class Sonah extends StatelessWidget {
                 )..getApps(),
               ),
               BlocProvider(create: (context) => ProgressCubit()),
+              BlocProvider(create: (context) => RoutineCubit()),
               BlocProvider(
                 create: (context) => SearchCubit(
                   systemAppsCubit: context.read<SystemAppsCubit>(),

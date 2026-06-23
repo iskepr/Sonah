@@ -12,6 +12,9 @@ import "../../battery/cubit/battery_cubit.dart";
 import "../../battery/views/battery_view.dart";
 import "../../date_time/views/clock_view.dart";
 import "../../date_time/views/full_date_view.dart";
+import "../../routine/cubit/routine_cubit.dart";
+import "../../routine/models/task_model.dart";
+import "../../routine/views/widgets/task_minimal_view.dart";
 import "../../search/views/search_view.dart";
 import "../../settings/views/settings_view.dart";
 import "../../system_apps/views/system_apps_view.dart";
@@ -65,6 +68,12 @@ class _HomeViewState extends State<HomeView> with WidgetsBindingObserver {
       child: BlocBuilder<HomeCubit, HomeState>(
         builder: (context, state) {
           final isSearchMode = state.isSearchMode;
+          final rotenCubit = context.read<RoutineCubit>();
+          rotenCubit.getRoutin();
+          Task? currentTask;
+          if (rotenCubit.state is RoutineLoaded) {
+            currentTask = (rotenCubit.state as RoutineLoaded).currentTask;
+          }
 
           return GestureDetector(
             onLongPress: () => showMyBottomSheet(
@@ -130,14 +139,16 @@ class _HomeViewState extends State<HomeView> with WidgetsBindingObserver {
                                 padding: EdgeInsets.symmetric(
                                   horizontal: kDefaultPadding,
                                 ),
-                                child: const Column(
+                                child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    ClockView(),
-                                    Row(
+                                    const ClockView(),
+                                    const Row(
                                       spacing: kMediumPadding,
                                       children: [FullDateView(), BatteryView()],
                                     ),
+                                    if (currentTask != null)
+                                      TaskMinimalView(task: currentTask),
                                   ],
                                 ),
                               ),
