@@ -31,6 +31,8 @@ class ZekrWidget extends StatelessWidget {
           width: double.infinity,
           borderRadius: BorderRadius.circular(kSmallBorderRadius),
           padding: const EdgeInsets.all(kLargePadding),
+          hasBorder: false,
+          color: context.colorScheme.primaryContainer,
           margin: EdgeInsets.zero,
           child: Stack(
             alignment: Alignment.center,

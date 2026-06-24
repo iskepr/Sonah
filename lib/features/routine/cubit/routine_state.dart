@@ -16,9 +16,27 @@ class RoutineLoaded extends RoutineState {
 
   TimeOfDay get now => TimeOfDay.now();
 
-  Task? get currentTask => tasks.firstWhereOrNull(
-    (t) => t.startTime.isBefore(now) && t.endTime.isAfter(now),
-  );
+  // Task? get currentTask => tasks.firstWhereOrNull(
+  //   (t) => t.startTime.isBefore(now) && t.endTime.isAfter(now),
+  // );
+
+  Task? get currentTask => tasks.firstWhereOrNull((t) {
+    final now = TimeOfDay.now();
+    final nowInMinutes = now.hour * 60 + now.minute;
+    final startTimeInMinutes = t.startTime.hour * 60 + t.startTime.minute;
+    final endTimeInMinutes = t.endTime.hour * 60 + t.endTime.minute;
+
+    // في حالة بداية ونهاية المهة في نفس اليوم
+    if (startTimeInMinutes <= endTimeInMinutes) {
+      return nowInMinutes >= startTimeInMinutes &&
+          nowInMinutes < endTimeInMinutes;
+    }
+    // في حالة بداية المهمة في يوم ونهايتها لليوم التاني
+    else {
+      return nowInMinutes >= startTimeInMinutes ||
+          nowInMinutes < endTimeInMinutes;
+    }
+  });
 
   RoutineLoaded({required this.tasks});
 }

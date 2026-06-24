@@ -2,6 +2,7 @@ import "package:flutter/material.dart";
 import "package:hive_flutter/hive_flutter.dart";
 
 import "../../../core/extensions/date_time_extensions.dart";
+import "../../home/models/app_mode.dart";
 part "task_model.g.dart";
 
 @HiveType(typeId: 0)
@@ -21,31 +22,13 @@ enum TaskPriority {
   @HiveField(2)
   high("هامة", Colors.deepOrange),
   @HiveField(3)
-  onTime("على الوقت", Colors.red);
+  onTime("في الوقت", Colors.redAccent),
+  @HiveField(4)
+  strict("على الموعد", Colors.red);
 
   final String label;
   final Color color;
   const TaskPriority(this.label, this.color);
-}
-
-@HiveType(typeId: 2)
-enum TaskMode {
-  @HiveField(0)
-  normal,
-  @HiveField(1)
-  focus,
-  @HiveField(2)
-  prayer,
-  @HiveField(3)
-  work,
-  @HiveField(4)
-  sleep,
-  @HiveField(5)
-  relax,
-  @HiveField(6)
-  game,
-  @HiveField(7)
-  study,
 }
 
 @HiveType(typeId: 3)
@@ -66,7 +49,7 @@ class Task {
   final TaskPriority priority;
 
   @HiveField(5)
-  final TaskMode mode;
+  final AppMode mode;
 
   @HiveField(6)
   final List<String>? appsIds; // لو فاضي مفيش تطبيقات ولو null كلو هيظهر
@@ -92,7 +75,7 @@ class Task {
     this.icon,
     this.type = TaskType.normal,
     this.priority = TaskPriority.medium,
-    this.mode = TaskMode.normal,
+    this.mode = AppMode.normal,
     this.appsIds,
     this.days,
     required this.startTime,
@@ -136,4 +119,32 @@ class Task {
                .toTimeOfDay;
 
   Duration get duration => Duration(minutes: durationInMinutes);
+
+  Task copyWith({
+    String? title,
+    String? description,
+    IconData? icon,
+    TaskType? type,
+    TaskPriority? priority,
+    AppMode? mode,
+    List<String>? appsIds,
+    List<String>? days,
+    TimeOfDay? startTime,
+    TimeOfDay? endTime,
+    int? durationInMinutes,
+    List<Task>? subTasks,
+  }) => Task(
+    title: title ?? this.title,
+    description: description ?? this.description,
+    icon: icon ?? this.icon,
+    type: type ?? this.type,
+    priority: priority ?? this.priority,
+    mode: mode ?? this.mode,
+    appsIds: appsIds ?? this.appsIds,
+    days: days ?? this.days,
+    startTime: startTime ?? this.startTime,
+    endTime: endTime ?? this.endTime,
+    durationInMinutes: durationInMinutes ?? this.durationInMinutes,
+    subTasks: subTasks ?? this.subTasks,
+  );
 }

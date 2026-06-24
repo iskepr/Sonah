@@ -22,7 +22,7 @@ class TaskAdapter extends TypeAdapter<Task> {
       icon: fields[12] as IconData?,
       type: fields[3] as TaskType,
       priority: fields[4] as TaskPriority,
-      mode: fields[5] as TaskMode,
+      mode: fields[5] as AppMode,
       appsIds: (fields[6] as List?)?.cast<String>(),
       days: (fields[7] as List?)?.cast<String>(),
       startTime: fields[8] as TimeOfDay,
@@ -127,6 +127,8 @@ class TaskPriorityAdapter extends TypeAdapter<TaskPriority> {
         return TaskPriority.high;
       case 3:
         return TaskPriority.onTime;
+      case 4:
+        return TaskPriority.strict;
       default:
         return TaskPriority.low;
     }
@@ -147,6 +149,9 @@ class TaskPriorityAdapter extends TypeAdapter<TaskPriority> {
       case TaskPriority.onTime:
         writer.writeByte(3);
         break;
+      case TaskPriority.strict:
+        writer.writeByte(4);
+        break;
     }
   }
 
@@ -157,75 +162,6 @@ class TaskPriorityAdapter extends TypeAdapter<TaskPriority> {
   bool operator ==(Object other) =>
       identical(this, other) ||
       other is TaskPriorityAdapter &&
-          runtimeType == other.runtimeType &&
-          typeId == other.typeId;
-}
-
-class TaskModeAdapter extends TypeAdapter<TaskMode> {
-  @override
-  final int typeId = 2;
-
-  @override
-  TaskMode read(BinaryReader reader) {
-    switch (reader.readByte()) {
-      case 0:
-        return TaskMode.normal;
-      case 1:
-        return TaskMode.focus;
-      case 2:
-        return TaskMode.prayer;
-      case 3:
-        return TaskMode.work;
-      case 4:
-        return TaskMode.sleep;
-      case 5:
-        return TaskMode.relax;
-      case 6:
-        return TaskMode.game;
-      case 7:
-        return TaskMode.study;
-      default:
-        return TaskMode.normal;
-    }
-  }
-
-  @override
-  void write(BinaryWriter writer, TaskMode obj) {
-    switch (obj) {
-      case TaskMode.normal:
-        writer.writeByte(0);
-        break;
-      case TaskMode.focus:
-        writer.writeByte(1);
-        break;
-      case TaskMode.prayer:
-        writer.writeByte(2);
-        break;
-      case TaskMode.work:
-        writer.writeByte(3);
-        break;
-      case TaskMode.sleep:
-        writer.writeByte(4);
-        break;
-      case TaskMode.relax:
-        writer.writeByte(5);
-        break;
-      case TaskMode.game:
-        writer.writeByte(6);
-        break;
-      case TaskMode.study:
-        writer.writeByte(7);
-        break;
-    }
-  }
-
-  @override
-  int get hashCode => typeId.hashCode;
-
-  @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      other is TaskModeAdapter &&
           runtimeType == other.runtimeType &&
           typeId == other.typeId;
 }

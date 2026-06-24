@@ -7,7 +7,9 @@ import "../../../constant.dart";
 import "../../../core/extensions/extensions.dart";
 import "../../athan/extensions/athan_extenstion.dart";
 import "../../azkar/data/azkar_data.dart";
+import "../../home/models/app_mode.dart";
 import "../models/task_model.dart";
+import "../repo/routine_repo.dart";
 import "../utils/tasks_utils.dart";
 import "routine_state.dart";
 export "routine_state.dart";
@@ -19,7 +21,21 @@ class RoutineCubit extends Cubit<RoutineState> {
   List<Task> tasks = [];
   List<Task> _userTasks = [];
 
-  List<Task> _buildTasksList() {
+  void getRoutin() {
+    final context = kNavigatorKey.currentContext;
+    if (context == null || context.prayerTimes == null) {
+      debugPrint("Error: Context or PrayerTimes is null!");
+      return;
+    }
+
+    _prayerTimes = context.prayerTimes!;
+
+    _buildTasksList();
+
+    safeEmit(RoutineLoaded(tasks: tasks));
+  }
+
+  void _buildTasksList() {
     final fajrChain = TaskChain(_prayerTimes.fajr);
     final dhuhrChain = TaskChain(_prayerTimes.dhuhr);
     final asrChain = TaskChain(_prayerTimes.asr);
@@ -41,6 +57,7 @@ class RoutineCubit extends Cubit<RoutineState> {
         description:
             "إِنَّ هَـذَا الْقُرْآنَ يِهْدِي لِلَّتِي هِيَ أَقْوَمُ وَيُبَشِّرُ الْمُؤْمِنِينَ الَّذِينَ يَعْمَلُونَ الصَّالِحَاتِ أَنَّ لَهُمْ أَجْراً كَبِيراً | الإسراء: 9",
         priority: TaskPriority.high,
+        mode: AppMode.prayer,
         appsIds: ["com.blink22.fajr"],
         durationInMinutes: 30,
       ),
@@ -100,15 +117,16 @@ class RoutineCubit extends Cubit<RoutineState> {
 
       ishaChain.append(
         title: "الذهاب للنوم",
-        icon: LucideIcons.moon,
+        icon: LucideIcons.bedDouble,
         description:
             "الاستعداد للنوم والاسترخاء تماماً للحصول على راحة كافية ليوم جديد.",
+        mode: AppMode.sleep,
         priority: TaskPriority.high,
-        durationInMinutes: 20,
+        durationInMinutes: 8 * 60,
       ),
     ];
 
-    return [
+    tasks = [
       ...List.generate(kPrayers.length, (index) {
         final prayer = kPrayers[index];
         final DateTime prayerTime =
@@ -121,7 +139,7 @@ class RoutineCubit extends Cubit<RoutineState> {
           description:
               "إِنَّ الصَّلَاةَ كَانَتْ عَلَى الْمُؤْمِنِينَ كِتَابًا مَوْقُوتًا | النساء: 103",
           priority: TaskPriority.onTime,
-          mode: TaskMode.prayer,
+          mode: AppMode.prayer,
           startTime: prayerTime.toTimeOfDay,
           durationInMinutes: kPrayerDurationInMinutes,
           subTasks: [
@@ -130,7 +148,7 @@ class RoutineCubit extends Cubit<RoutineState> {
               icon: azkarAfterPrayer.icon,
               description: azkarAfterPrayer.description,
               priority: TaskPriority.high,
-              mode: TaskMode.prayer,
+              mode: AppMode.prayer,
               startTime: prayerTime
                   .add(const Duration(minutes: kPrayerDurationInMinutes))
                   .toTimeOfDay,
@@ -146,7 +164,7 @@ class RoutineCubit extends Cubit<RoutineState> {
           icon: azkar.icon,
           description: azkar.description,
           priority: TaskPriority.high,
-          mode: TaskMode.prayer,
+          mode: AppMode.prayer,
           startTime: azkar.getTime(_prayerTimes),
           durationInMinutes: azkar.durationInMinutes,
         );
@@ -154,23 +172,7 @@ class RoutineCubit extends Cubit<RoutineState> {
 
       ..._userTasks,
     ];
-  }
 
-  void _sortTasks(List<Task> tasks) =>
-      tasks.sort((a, b) => a.startTime.compareTo(b.startTime));
-
-  void getRoutin() {
-    final context = kNavigatorKey.currentContext;
-    if (context == null || context.prayerTimes == null) {
-      debugPrint("Error: Context or PrayerTimes is null!");
-      return;
-    }
-
-    _prayerTimes = context.prayerTimes!;
-
-    final localTasks = _buildTasksList();
-    _sortTasks(localTasks);
-
-    safeEmit(RoutineLoaded(tasks: localTasks));
+    tasks = RoutineRepo.processDynamicTimeline(tasks);
   }
 }

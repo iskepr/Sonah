@@ -2,6 +2,7 @@ import "package:hive_flutter/hive_flutter.dart";
 import "package:path_provider/path_provider.dart";
 
 import "../../constant.dart";
+import "../../features/home/models/app_mode.dart";
 import "../../features/routine/models/task_model.dart";
 import "../../features/system_apps/models/application_model.dart";
 import "../utils/platform_utils.dart";
@@ -20,7 +21,7 @@ class HiveHelper {
     Hive.registerAdapter(ApplicationModelAdapter());
     Hive.registerAdapter(TaskTypeAdapter());
     Hive.registerAdapter(TaskPriorityAdapter());
-    Hive.registerAdapter(TaskModeAdapter());
+    Hive.registerAdapter(AppModeAdapter());
     Hive.registerAdapter(TaskAdapter());
 
     await _openAllBoxes();

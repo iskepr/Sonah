@@ -1,6 +1,7 @@
 import "package:flutter/material.dart";
 
 import "../../../core/extensions/date_time_extensions.dart";
+import "../../home/models/app_mode.dart";
 import "../models/task_model.dart";
 
 class TaskChain {
@@ -17,7 +18,7 @@ class TaskChain {
     TaskPriority priority = TaskPriority.medium,
     int delayInMinutes = 5,
     List<String>? appsIds,
-    TaskMode mode = TaskMode.normal,
+    AppMode mode = AppMode.normal,
     bool isBefore =
         false, // لو true يبقى المهمة دي قبل التوقيت الحالي (قبل الصلاة مثلاً)
   }) {
